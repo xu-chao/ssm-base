@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.WorkOrderDao">
+
+	<resultMap type="com.java.activiti.model.WorkOrder" id="WorkOrderResult">
+		<result property="id" column="id"/>
+		<result property="woStartDate" column="woStartDate"/>
+		<result property="woType" column="woType"/>
+		<result property="materielID" column="materielID"/>
+		<result property="materielType" column="materielType"/>
+		<result property="repairedPerson" column="repairedPerson"/>
+		<result property="repairedHelper" column="repairedHelper"/>
+		<result property="repairedProcess" column="repairedProcess"/>
+		<result property="repairedImageID" column="repairedImageID"/>
+		<result property="repairedFileID" column="repairingFileID"/>
+		<result property="woEndDate" column="woEndDate"/>
+		<result property="status" column="status"/>
+		<result property="processInstanceId" column="processInstanceId"/>
+		<association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+		<association property="repair" column="repairID" select="com.java.activiti.dao.RepairDao.findById"/>
+	</resultMap>
+	
+	<select id="workOrderPage" parameterType="Map" resultMap="WorkOrderResult">
+		select * from t_workorder
+		<where>
+			<if test="userId!=null and userId!='' ">
+				 and userId = #{userId}
+			</if>
+		</where>
+		order by WOStartDate desc
+		<if test="pageIndex!=null and pageSize!=null">
+		  limit #{pageIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="workOrderCount" parameterType="Map" resultType="int">
+		select count(1) from t_workorder
+		<where>
+			<if test="userId!=null and userId!='' ">
+				 and userId = #{userId}
+			</if>
+		</where>
+	</select>
+
+	<select id="workOrderThroughPage" parameterType="Map" resultMap="WorkOrderResult">
+		select * from t_workorder
+		<where>
+			<if test="userId!=null and userId!='' ">
+				and userId = #{userId}
+			</if>
+			<if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+				and ${searchType} like CONCAT('%',#{searchValue},'%')
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+				and WOStartDate between #{startDate} and #{endDate}
+			</if>
+		</where>
+		order by WOStartDate desc
+		<if test="pageIndex!=null and pageSize!=null">
+			limit #{pageIndex},#{pageSize}
+		</if>
+	</select>
+
+	<select id="workOrderThroughCount" parameterType="Map" resultType="int">
+		select count(1) from t_workorder
+		<where>
+			<if test="userId!=null and userId!='' ">
+				and userId = #{userId}
+			</if>
+			<if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+				and ${searchType} like CONCAT('%',#{searchValue},'%')
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+				and WOStartDate between #{startDate} and #{endDate}
+			</if>
+		</where>
+	</select>
+
+	<insert id="addWorkOrder" parameterType="com.java.activiti.model.WorkOrder">
+		insert into t_workorder values(#{id},#{user.id},#{woStartDate},#{woType},#{materielID},#{materielType},#{repairedPerson},#{repairedHelper},#{repairedProcess},#{repairedImageID},#{repairedFileID},#{woEndDate},#{state},#{repair.id},#{processInstanceId})
+	</insert>
+</mapper> 

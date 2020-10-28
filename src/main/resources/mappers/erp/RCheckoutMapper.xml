@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.RCheckoutDao">
+    <resultMap type="com.java.activiti.model.erp.RCheckout" id="RCheckoutResult">
+        <id property="RCheckoutId" column="RCheckoutId"/>
+        <result property="RCheckoutDate" column="RCheckoutDate"/>
+        <result property="RCheckoutMount" column="RCheckoutMount"/>
+        <result property="RCheckoutNotQuaMount" column="RCheckoutNotQuaMount"/>
+        <result property="RCheckoutResult" column="RCheckoutResult"/>
+        <result property="RCheckoutDesc" column="RCheckoutDesc"/>
+        <result property="RCheckoutNum" column="RCheckoutNum"/>
+        <result property="RCheckoutFlag" column="RCheckoutFlag"/>
+    </resultMap>
+
+    <select id="rCheckoutPage" parameterType="Map" resultMap="RCheckoutResult">
+        select * from erp_record_checkout
+<!--        <where>-->
+<!--            <if test="userId!=null and userId!='' ">-->
+<!--                and NotQuaId = #{userId}-->
+<!--            </if>-->
+<!--        </where>-->
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="rCheckoutCount" parameterType="Map" resultType="int">
+        select count(1) from erp_record_checkout
+<!--        <where>-->
+<!--            <if test="userId!=null and userId!='' ">-->
+<!--                and NotQuaId = #{userId}-->
+<!--            </if>-->
+<!--        </where>-->
+    </select>
+
+    <insert id="addRCheckout" parameterType="com.java.activiti.model.erp.RCheckout">
+        insert into erp_record_checkout
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="RCheckoutId!= null">
+                RCheckoutId,
+            </if>
+            <if test="RCheckoutDate!= null">
+                RCheckoutDate,
+            </if>
+            <if test="RCheckoutMount!=null ">
+                RCheckoutMount,
+            </if>
+            <if test="RCheckoutNotQuaMount!=null">
+                RCheckoutNotQuaMount,
+            </if>
+            <if test="RCheckoutResult!=null">
+                RCheckoutResult,
+            </if>
+            <if test="RCheckoutDesc!=null">
+                RCheckoutDesc,
+            </if>
+            <if test="RCheckoutNum!=null">
+                RCheckoutNum,
+            </if>
+            <if test="RCheckoutFlag!=null">
+                RCheckoutFlag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="RCheckoutId != null">
+                #{RCheckoutId,jdbcType=VARCHAR},
+            </if>
+            <if test="RCheckoutDate != null">
+                #{RCheckoutDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="RCheckoutMount != null">
+                #{RCheckoutMount,jdbcType=INTEGER},
+            </if>
+            <if test="RCheckoutNotQuaMount != null">
+                #{RCheckoutNotQuaMount,jdbcType=INTEGER},
+            </if>
+            <if test="RCheckoutResult != null">
+                #{RCheckoutResult,jdbcType=VARCHAR},
+            </if>
+            <if test="RCheckoutDesc != null">
+                #{RCheckoutDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="RCheckoutNum != null">
+                #{RCheckoutNum,jdbcType=INTEGER},
+            </if>
+            <if test="RCheckoutFlag != null">
+                #{RCheckoutFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="RCheckoutResult">
+        SELECT * FROM erp_record_checkout where RCheckoutId = #{RCheckoutId};
+    </select>
+
+    <update id="updateRCheckout" parameterType="com.java.activiti.model.erp.RCheckout">
+        update erp_record_checkout
+        <set>
+            <if test="RCheckoutDate!=null">
+                RCheckoutDate=#{RCheckoutDate},
+            </if>
+            <if test="RCheckoutMount!=null">
+                RCheckoutMount=#{RCheckoutMount},
+            </if>
+            <if test="RCheckoutNotQuaMount!=null">
+                RCheckoutNotQuaMount=#{RCheckoutNotQuaMount},
+            </if>
+            <if test="RCheckoutResult!=null">
+                RCheckoutResult=#{RCheckoutResult},
+            </if>
+            <if test="RCheckoutDesc!=null">
+                RCheckoutDesc=#{RCheckoutDesc},
+            </if>
+            <if test="RCheckoutNum!=null">
+                RCheckoutNum=#{RCheckoutNum},
+            </if>
+            <if test="RCheckoutFlag!=null">
+                RCheckoutFlag=#{RCheckoutFlag},
+            </if>
+        </set>
+        where RCheckoutId=#{RCheckoutId}
+    </update>
+</mapper> 

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.DeptDao">
+    <!-- 初始化部门 -->
+    <resultMap type="com.java.activiti.pojo.DeptTree" id="deptTree">
+        <id column="deptID" property="id" javaType="java.lang.String"/>
+        <result column="deptName" property="text" javaType="java.lang.String"/>
+        <collection column="deptID" property="children" select="selectChild"/>
+    </resultMap>
+
+    <!-- 查找一级部门 -->
+    <!-- 先查询部门根级目录 -->
+    <!-- 这里的返回结果必须为resultMap，并且值为上面构建的resultMap的id的值 -->
+    <select id="selectDeptList" resultMap="deptTree">
+		select * from act_id_dept where deptID='0'
+	</select>
+
+    <!-- 查询二级部门 -->
+    <select id="selectChild" parameterType="java.lang.String" resultMap="deptTree">
+		select * from act_id_dept where pid = #{deptID}
+	</select>
+
+    <!-- 根据deptID查询部门 -->
+    <select id="selectDeptById" parameterType="java.lang.String" resultType="com.java.activiti.model.Dept">
+		select * from act_id_dept where deptID = #{deptID}
+	</select>
+
+    <!-- 根据userID查询部门 -->
+    <select id="findDeptByUserId" parameterType="java.lang.String" resultType="com.java.activiti.model.Dept">
+		SELECT d.* FROM act_id_user u, act_id_userdept ud, act_id_dept d
+		WHERE u.ID_ = ud.userID AND ud.deptID = d.deptID AND u.ID_ = #{userID}
+	</select>
+
+    <!-- 根据id查询用户 -->
+    <select id="findUserByDeptId" parameterType="java.lang.String" resultType="com.java.activiti.model.User">
+        select u.ID_ as id,u.FIRST_ as firstName,u.LAST_ as lastName,u.EMAIL_ as email,
+        u.CREATE_TIME_ as createTime,u.LAST_LOGIN_TIME_ as lastLoginTime,u.STATUS_ as status
+        from act_id_user u,act_id_userdept ud,act_id_dept d
+        where u.ID_ = ud.userID and ud.deptID = d.deptID and d.deptID = #{deptID}
+	</select>
+    <!-- 插入数据 -->
+    <insert id="insertDept" parameterType="Dept">
+        insert into act_id_dept values(
+        <if test='deptID != null and deptID != ""'>
+            #{deptID}
+        </if>
+        <if test='deptID == null or deptID == ""'>
+            null
+        </if>
+        <if test='deptName != null and deptName != ""'>
+            ,#{deptName}
+        </if>
+        <if test='deptName == null or deptName == ""'>
+            ,null
+        </if>
+        <if test='deptAddress != null and deptAddress != "" '>
+            ,#{deptAddress}
+        </if>
+        <if test='deptAddress == null or deptAddress == ""'>
+            ,null
+        </if>
+        <if test='deptMaster != null and deptMaster != ""'>
+            ,#{deptMaster}
+        </if>
+        <if test='deptMaster == null or deptMaster == ""'>
+            ,null
+        </if>
+        <if test='deptPhone != null and deptPhone != ""'>
+            ,#{deptPhone}
+        </if>
+        <if test='deptPhone == null or deptPhone == ""'>
+            ,null
+        </if>
+        <if test='deptFax != null and deptFax != ""'>
+            ,#{deptFax}
+        </if>
+        <if test='deptFax == null or deptFax == ""'>
+            ,null
+        </if>
+        <if test='deptEmail != null and deptEmail != ""'>
+            ,#{deptEmail}
+        </if>
+        <if test='deptEmail == null or deptEmail == ""'>
+            ,null
+        </if>
+        <if test='deptRemarks != null and deptRemarks != ""'>
+            ,#{deptRemarks}
+        </if>
+        <if test='deptRemarks == null or deptRemarks == ""'>
+            ,null
+        </if>
+        <if test='pid != null and pid != ""'>
+            ,#{pid}
+        </if>
+        <if test='pid == null or pid == ""'>
+            ,null
+        </if>
+        <if test='is_parent != null'>
+            ,#{is_parent}
+        </if>
+        <if test='is_parent == null'>
+            ,null
+        </if>
+        );
+    </insert>
+    <!-- 	根据id删除数据-->
+    <delete id="deleteDeptById" parameterType="java.lang.String">
+		delete from act_id_dept where deptID = #{deptID}
+	</delete>
+    <!-- 	根据id修改数据 -->
+    <update id="updateDeptById" parameterType="Dept">
+        update act_id_dept
+        <trim prefix="set" suffixOverrides="," suffix="where deptID = #{deptID}">
+            <if test='deptName != null and deptName != ""'>
+                deptName = #{deptName},
+            </if>
+            <if test='deptAddress != null and deptAddress != "" '>
+                deptAddress = #{deptAddress},
+            </if>
+            <if test='deptMaster != null and deptMaster != ""'>
+                deptMaster = #{deptMaster},
+            </if>
+            <if test='deptPhone != null and deptPhone != ""'>
+                deptPhone = #{deptPhone},
+            </if>
+            <if test='deptFax != null and deptFax != ""'>
+                deptFax = #{deptFax},
+            </if>
+            <if test='deptEmail != null and deptEmail != ""'>
+                deptEmail = #{deptEmail},
+            </if>
+            <if test='deptRemarks != null and deptRemarks != ""'>
+                deptRemarks = #{deptRemarks},
+            </if>
+            <if test='pid != null and pid != ""'>
+                pid = #{pid},
+            </if>
+            <if test='is_parent != null'>
+                is_parent = #{is_parent}
+            </if>
+        </trim>
+    </update>
+    <!-- 	根据id修改数据 -->
+    <update id="updateNameById" parameterType="java.lang.String">
+        update act_id_dept
+        <trim prefix="set" suffixOverrides="," suffix="where deptID = #{deptID}">
+            <if test='deptName != null and deptName != ""'>
+                deptName = #{deptName},
+            </if>
+        </trim>
+    </update>
+
+</mapper>

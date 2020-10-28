@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.PurchaseDao">
+    <resultMap type="com.java.activiti.model.erp.Purchase" id="PurchaseResult">
+        <id property="purchaseId" column="purchaseId"/>
+        <result property="purchaseDate" column="purchaseDate"/>
+        <result property="SUPPLIER_ID" column="SUPPLIER_ID"/>
+        <result property="purchasedId" column="purchasedId"/>
+        <result property="purchaseMount" column="purchaseMount"/>
+        <result property="purchasePerson" column="purchasePerson"/>
+        <result property="purchaseGoodsPerson" column="purchaseGoodsPerson"/>
+        <result property="REPO_ID" column="REPO_ID"/>
+        <result property="purchaseNum" column="purchaseNum"/>
+        <result property="purchaseLeave" column="purchaseLeave"/>
+        <result property="purchaseFlag" column="purchaseFlag"/>
+        <association property="supplier" column="SUPPLIER_ID" select="com.java.activiti.dao.erp.SupplierDao.findById"/>
+        <association property="respository" column="REPO_ID" select="com.java.activiti.dao.erp.RespositoryDao.findById"/>
+        <association property="user" column="purchaseGoodsPerson" select="com.java.activiti.dao.UserDao.findById"/>
+    </resultMap>
+
+    <select id="purchasePage" parameterType="Map" resultMap="PurchaseResult">
+        select * from erp_purchase
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and purchasePerson = #{userId}
+            </if>
+        </where>
+        order by purchaseDate desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="purchaseCount" parameterType="Map" resultType="int">
+        select count(1) from erp_purchase
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and purchasePerson = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addPurchase" parameterType="com.java.activiti.model.erp.Purchase">
+        insert into erp_purchase
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="purchaseId!= null">
+                purchaseId,
+            </if>
+            <if test="purchaseDate!= null">
+                purchaseDate,
+            </if>
+            <if test="SUPPLIER_ID!=null ">
+                SUPPLIER_ID,
+            </if>
+            <if test="purchasedId!=null">
+                purchasedId,
+            </if>
+            <if test="purchaseMount!=null">
+                purchaseMount,
+            </if>
+            <if test="purchasePerson!=null">
+                purchasePerson,
+            </if>
+            <if test="purchaseGoodsPerson!=null">
+                purchaseGoodsPerson,
+            </if>
+            <if test="REPO_ID != null">
+                REPO_ID,
+            </if>
+            <if test="purchaseNum != null">
+                purchaseNum,
+            </if>
+            <if test="purchaseLeave != null">
+                purchaseLeave,
+            </if>
+            <if test="purchaseFlag != null">
+                purchaseFlag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="purchaseId != null">
+                #{purchaseId,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseDate != null">
+                #{purchaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="SUPPLIER_ID != null">
+                #{SUPPLIER_ID,jdbcType=INTEGER},
+            </if>
+            <if test="purchasedId != null">
+                #{purchasedId,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseMount != null">
+                #{purchaseMount,jdbcType=INTEGER},
+            </if>
+            <if test="purchasePerson != null">
+                #{purchasePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGoodsPerson != null">
+                #{purchaseGoodsPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="REPO_ID != null">
+                #{REPO_ID,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseNum != null">
+                #{purchaseNum,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseLeave != null">
+                #{purchaseLeave,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseFlag != null">
+                #{purchaseFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="PurchaseResult">
+        SELECT * FROM erp_purchase where purchaseId =#{purchaseId};
+    </select>
+
+    <update id="updatePurchase" parameterType="com.java.activiti.model.erp.Purchase">
+        update erp_purchase
+        <set>
+            <if test="purchaseDate!=null">
+                purchaseDate=#{purchaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="SUPPLIER_ID!=null">
+                SUPPLIER_ID=#{SUPPLIER_ID},
+            </if>
+            <if test="purchasedId!=null">
+                purchasedId=#{purchasedId},
+            </if>
+            <if test="purchaseMount!=null">
+                purchaseMount=#{purchaseMount},
+            </if>
+            <if test="purchasePerson!=null">
+                purchasePerson=#{purchasePerson},
+            </if>
+            <if test="purchaseGoodsPerson!=null">
+                purchaseGoodsPerson=#{purchaseGoodsPerson},
+            </if>
+            <if test="REPO_ID!=null">
+                REPO_ID=#{REPO_ID},
+            </if>
+            <if test="purchaseNum!=null">
+                purchaseNum=#{purchaseNum},
+            </if>
+            <if test="purchaseLeave!=null">
+                purchaseLeave=#{purchaseLeave},
+            </if>
+            <if test="purchaseFlag!=null">
+                purchaseFlag=#{purchaseFlag},
+            </if>
+        </set>
+        where purchaseId=#{purchaseId}
+    </update>
+</mapper> 

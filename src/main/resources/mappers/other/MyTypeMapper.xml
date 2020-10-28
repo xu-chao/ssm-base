@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.MyTypeDao">
+	<resultMap id="myType" type="com.java.activiti.model.MyType">
+		<id property="typeID" column="typeID"/>
+		<result property="typeCode" column="typeCode"/>
+		<result property="typeName" column="typeName"/>
+	</resultMap>
+    <select id="findById" resultMap="myType">
+		select * from type_code
+		where typeID = #{typeID}
+	</select>
+	<!-- 根据id查询菜单 -->
+	<select id="findMyTypeByTypeCode" parameterType="java.lang.String" resultType="myType">
+		select * from type_code where typeCode = #{typeCode}
+	</select>
+	<!-- 根据id查询菜单 -->
+	<select id="selectMyTypeByTypeCode" parameterType="java.lang.String" resultType="myType">
+		select * from t_type where typeCode = #{typeCode}
+	</select>
+
+</mapper>

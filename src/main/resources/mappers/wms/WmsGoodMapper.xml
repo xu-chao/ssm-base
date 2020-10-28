@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.wms.WmsGoodDao">
+    <resultMap id="wmsGood" type="com.java.activiti.model.wms.WmsGood">
+        <id property="goodEncoding" column="goodEncoding"/>
+        <result property="goodName" column="goodName"/>
+        <result property="goodModel" column="goodModel"/>
+        <result property="goodUnit" column="goodUnit"/>
+        <association property="perform" column="performStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="overhaul" column="overhaulStatus"
+                     select="com.java.activiti.dao.MyTypeDao.findById"/>
+
+    </resultMap>
+
+
+    <select id="findById" parameterType="java.lang.String" resultMap="wmsGood">
+		select * from wms_goods where goodEncoding=#{goodEncoding}
+	</select>
+
+    <select id="wmsGoodPage" parameterType="Map" resultMap="wmsGood">
+        select * from wms_goods
+        <where>
+            <if test="goodEncoding!=null and goodEncoding!='' ">
+                and goodEncoding like concat('%',#{goodEncoding},'%')
+            </if>
+            <if test="goodName!=null and goodName!='' ">
+                and goodName like concat('%',#{goodName},'%')
+            </if>
+            <if test="goodModel!=null and goodModel!='' ">
+                and goodModel like concat('%',#{goodModel},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="wmsGoodCount" parameterType="Map" resultType="int">
+        select count(1) from wms_goods
+        <where>
+            <if test="goodEncoding!=null and goodEncoding!='' ">
+                and goodEncoding like concat('%',#{goodEncoding},'%')
+            </if>
+            <if test="goodName!=null and goodName!='' ">
+                and goodName like concat('%',#{goodName},'%')
+            </if>
+            <if test="goodModel!=null and goodModel!='' ">
+                and goodModel like concat('%',#{goodModel},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <insert id="addWmsGood" parameterType="com.java.activiti.model.wms.WmsGood">
+        insert into wms_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodEncoding != null">
+                goodEncoding,
+            </if>
+            <if test="goodName != null">
+                goodName,
+            </if>
+            <if test="goodModel != null">
+                goodModel,
+            </if>
+            <if test="goodUnit != null">
+                goodUnit,
+            </if>
+            <if test="performStatus != null">
+                performStatus,
+            </if>
+            <if test="overhaulStatus != null">
+                overhaulStatus,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodEncoding != null">
+                #{goodEncoding,jdbcType=VARCHAR},
+            </if>
+            <if test="goodName != null">
+                #{goodName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodModel != null">
+                #{goodModel,jdbcType=VARCHAR},
+            </if>
+            <if test="goodUnit != null">
+                #{goodUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="performStatus != null">
+                #{performStatus,jdbcType=BIGINT},
+            </if>
+            <if test="overhaulStatus != null">
+                #{overhaulStatus,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWmsGood" parameterType="com.java.activiti.model.wms.WmsGood">
+        update wms_goods
+        <set>
+            <if test="goodEncoding!=null and goodEncoding!='' ">
+                goodEncoding=#{goodEncoding},
+            </if>
+            <if test="goodName!=null and goodName!='' ">
+                goodName=#{goodName},
+            </if>
+            <if test="goodModel!=null and goodModel!='' ">
+                goodModel=#{goodModel},
+            </if>
+            <if test="goodUnit!=null and goodUnit!='' ">
+                goodUnit=#{goodUnit},
+            </if>
+            <if test="performStatus!=null and performStatus!='' ">
+                performStatus=#{performStatus},
+            </if>
+            <if test="overhaulStatus!=null and overhaulStatus!='' ">
+                overhaulStatus=#{overhaulStatus},
+            </if>
+        </set>
+        where Id=#{Id}
+    </update>
+
+    <delete id="deleteWmsGoodById" parameterType="java.util.List">
+        delete from wms_goods where Id in
+        <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="selectWmsGoodByGoodEncoding" parameterType="com.java.activiti.model.wms.WmsGood" resultMap="wmsGood">
+        select * from wms_goods
+        <where>
+            <if test="goodEncoding!=null and goodEncoding!='' ">
+                and goodEncoding = #{goodEncoding}
+            </if>
+        </where>
+    </select>
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findWmsGood" parameterType="com.java.activiti.model.wms.WmsGood" resultMap="wmsGood">
+        select * from wms_goods
+        <where>
+            <if test="goodsId!=null and goodsId!='' ">
+                and goodsId = #{goodsId}
+            </if>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName = #{goodsName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode = #{goodsCode}
+            </if>
+            <if test="goodsUnit!=null and goodsUnit!='' ">
+                and goodsUnit = #{goodsUnit}
+            </if>
+        </where>
+    </select>
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findWmsGoodByExcel" parameterType="com.java.activiti.model.wms.WmsGood" resultMap="wmsGood">
+        select * from wms_goods
+        <where>
+            <if test="goodsId!=null and goodsId!='' ">
+                and goodsId = #{goodsId}
+            </if>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName = #{goodsName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode = #{goodsCode}
+            </if>
+            <if test="goodsUnit!=null and goodsUnit!='' ">
+                and goodsUnit = #{goodsUnit}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+
+    <!-- 自动补全 -->
+    <select id="selectGoodEncodingLike"
+            parameterType="java.lang.String" resultMap="wmsGood">
+		select vegg.goodEncoding AS goodEncoding from view_wms_goods_goodencoding vegg
+		where
+		vegg.goodEncoding like CONCAT('%',#{goodEncoding},'%')
+	</select>
+    <!-- 自动补全 -->
+    <select id="selectGoodNameLike"
+            parameterType="java.lang.String" resultMap="wmsGood">
+		select vegg.goodName AS goodName from view_wms_goods_goodName vegg
+		where
+		vegg.goodName like CONCAT('%',#{goodName},'%')
+	</select>
+    <!-- 自动补全 -->
+    <select id="selectGoodModelLike"
+            parameterType="java.lang.String" resultMap="wmsGood">
+		select vegg.goodModel AS goodModel from view_wms_goods_goodModel vegg
+		where
+		vegg.goodModel like CONCAT('%',#{goodModel},'%')
+	</select>
+
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectALL" resultType="wmsGood">
+		select * from wms_goods
+	</select>
+</mapper>

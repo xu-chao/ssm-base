@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java.activiti.dao.GroupPermissionDao">
+
+    <resultMap id="rolePermission" type="com.java.activiti.pojo.GroupPermissionVO">
+        <result property="name" column="ACTION_NAME"/>
+        <result property="url" column="ACTION_PARAM"/>
+        <result property="group" column="GROUP_ID"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="rolePermission">
+        select
+            p.NAME_ AS ACTION_NAME, p.URL_ AS ACTION_PARAM, g.ID_ AS GROUP_ID
+        from
+            act_id_group g, act_id_permission p, act_id_rolepermission rp
+        where
+            g.ID_ = rp.GID_ and
+            p.ID_ = rp.PID_
+    </select>
+</mapper>

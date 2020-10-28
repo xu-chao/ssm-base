@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.PermissionDao">
+    <resultMap id="permission" type="com.java.activiti.model.Permission">
+        <id property="id" column="ID_"/>
+        <result property="url" column="URL_"/>
+        <result property="name" column="NAME_"/>
+    </resultMap>
+
+    <select id="permissionPage" parameterType="Map" resultMap="permission">
+        select * from act_id_permission
+        <where>
+            <if test="name!=null and name!='' ">
+                and NAME_ = #{name}
+            </if>
+        </where>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="permissionCount" parameterType="Map" resultType="int">
+        select count(1) from act_id_permission
+        <where>
+            <if test="name!=null and name!='' ">
+                and NAME_ = #{name}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByGroupId" parameterType="String" resultMap="permission">
+		SELECT p.ID_ as id,p.NAME_ as url ,p.NAME_ as name
+        FROM act_id_permission p
+        LEFT JOIN act_id_rolepermission rp ON rp.PID_ = p.ID_ LEFT JOIN act_id_group g ON g.ID_ = rp.GID_ WHERE g.ID_ = #{groupID}
+	</select>
+
+    <select id="selectAllPermission" resultMap="permission">
+		SELECT p.ID_ as id,p.NAME_ as url ,p.NAME_ as name
+        FROM act_id_permission p
+	</select>
+
+    <!-- 根据GID_删除拥有的角色信息 -->
+    <delete id="deleteAllocationdByGid">
+		delete from act_id_rolepermission where GID_ = #{groupID}
+	</delete>
+
+    <!-- 新增角色权限关系 -->
+    <insert id="insertGroupAllocation">
+		INSERT INTO act_id_rolepermission VALUES(#{groupID},#{allocationID})
+	</insert>
+
+    <insert id="addPermission" parameterType="com.java.activiti.model.Permission">
+		insert into act_id_permission(ID_, URL_, NAME_)
+		values(#{id},#{url},#{name});
+	</insert>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="permission">
+		select * from act_id_permission where NAME_=#{permissionName}
+	</select>
+
+    <update id="updatePermission" parameterType="com.java.activiti.model.Permission">
+        update act_id_permission
+        <set>
+            <if test="name!=null and name!='' ">
+                NAME_=#{name},
+            </if>
+            <if test="url!=null and url!='' ">
+                URL_=#{url},
+            </if>
+        </set>
+        where ID_=#{id}
+    </update>
+
+    <delete id="deletePermission" parameterType="java.util.List">
+        delete from act_id_permission where id_ in
+        <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper> 

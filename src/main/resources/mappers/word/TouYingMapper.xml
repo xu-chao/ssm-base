@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.word.TouYingDao">
+    <resultMap type="com.java.activiti.model.word.TouYing" id="TouYingResult">
+        <id property="id" column="id"/>
+        <result property="project_name" column="project_name"/>
+        <result property="entry_name" column="entry_name"/>
+        <result property="touYing_date" column="touYing_date"/>
+        <result property="n1_flag" column="n1_flag"/>
+        <result property="n1_text" column="n1_text"/>
+        <result property="n2_flag" column="n2_flag"/>
+        <result property="n2_text" column="n2_text"/>
+
+        <result property="n3_flag" column="n3_flag"/>
+        <result property="n3_text" column="n3_text"/>
+
+        <result property="n4_flag" column="n4_flag"/>
+        <result property="n4_text" column="n4_text"/>
+
+        <result property="n5_flag" column="n5_flag"/>
+        <result property="n5_text" column="n5_text"/>
+
+        <result property="n6_flag" column="n6_flag"/>
+        <result property="n6_text" column="n6_text"/>
+
+        <result property="n7_flag" column="n7_flag"/>
+        <result property="n7_text" column="n7_text"/>
+
+        <result property="n8_flag" column="n8_flag"/>
+        <result property="n8_text" column="n8_text"/>
+
+        <result property="n9_flag" column="n9_flag"/>
+        <result property="n9_text" column="n9_text"/>
+
+        <result property="n10_flag" column="n10_flag"/>
+        <result property="n10_text" column="n10_text"/>
+
+        <result property="n11_flag" column="n11_flag"/>
+        <result property="n11_text" column="n11_text"/>
+
+        <result property="n12_flag" column="n12_flag"/>
+        <result property="n12_text" column="n12_text"/>
+
+        <result property="n13_flag" column="n13_flag"/>
+        <result property="n13_text" column="n13_text"/>
+
+        <result property="n14_flag" column="n14_flag"/>
+        <result property="n14_text" column="n14_text"/>
+
+        <result property="n15_flag" column="n15_flag"/>
+        <result property="n15_text" column="n15_text"/>
+
+        <result property="n16_flag" column="n16_flag"/>
+        <result property="n16_text" column="n16_text"/>
+
+        <result property="n17_flag" column="n17_flag"/>
+        <result property="n17_text" column="n17_text"/>
+
+        <result property="n18_flag" column="n18_flag"/>
+        <result property="n18_text" column="n18_text"/>
+
+        <result property="n19_flag" column="n19_flag"/>
+        <result property="n19_text" column="n19_text"/>
+
+        <result property="n20_flag" column="n20_flag"/>
+        <result property="n20_text" column="n20_text"/>
+
+        <result property="n21_flag" column="n1_flag"/>
+        <result property="n21_text" column="n21_text"/>
+
+        <result property="n22_flag" column="n22_flag"/>
+        <result property="n22_text" column="n22_text"/>
+
+        <result property="n23_flag" column="n23_flag"/>
+        <result property="n23_text" column="n23_text"/>
+
+        <result property="jieLun_text" column="jieLun_text"/>
+        <result property="other_text" column="other_text"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+    </resultMap>
+
+    <insert id="addTouYing" parameterType="com.java.activiti.model.word.TouYing">
+        insert into t_word_touying
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="project_name != null">
+                project_name,
+            </if>
+            <if test="entry_name != null">
+                entry_name,
+            </if>
+            <if test="user!=null and user.id != null">
+                userId,
+            </if>
+            <if test="touYing_date!=null">
+                touYing_date,
+            </if>
+            <if test="n1_flag != null">
+                n1_flag,
+            </if>
+            <if test="n1_text != null">
+                n1_text,
+            </if>
+
+            <if test="n2_flag != null">
+                n2_flag,
+            </if>
+            <if test="n2_text != null">
+                n2_text,
+            </if>
+
+            <if test="n3_flag != null">
+                n3_flag,
+            </if>
+            <if test="n3_text != null">
+                n3_text,
+            </if>
+
+            <if test="n4_flag != null">
+                n4_flag,
+            </if>
+            <if test="n4_text != null">
+                n4_text,
+            </if>
+
+            <if test="n5_flag != null">
+                n5_flag,
+            </if>
+            <if test="n5_text != null">
+                n5_text,
+            </if>
+
+            <if test="n6_flag != null">
+                n6_flag,
+            </if>
+            <if test="n6_text != null">
+                n6_text,
+            </if>
+
+            <if test="n7_flag != null">
+                n7_flag,
+            </if>
+            <if test="n7_text != null">
+                n7_text,
+            </if>
+
+            <if test="n8_flag != null">
+                n8_flag,
+            </if>
+            <if test="n8_text != null">
+                n8_text,
+            </if>
+
+            <if test="n9_flag != null">
+                n9_flag,
+            </if>
+            <if test="n9_text != null">
+                n9_text,
+            </if>
+
+            <if test="n10_flag != null">
+                n10_flag,
+            </if>
+            <if test="n10_text != null">
+                n10_text,
+            </if>
+
+            <if test="n11_flag != null">
+                n11_flag,
+            </if>
+            <if test="n11_text != null">
+                n11_text,
+            </if>
+
+            <if test="n12_flag != null">
+                n12_flag,
+            </if>
+            <if test="n12_text != null">
+                n12_text,
+            </if>
+
+            <if test="n13_flag != null">
+                n13_flag,
+            </if>
+            <if test="n13_text != null">
+                n13_text,
+            </if>
+
+            <if test="n14_flag != null">
+                n14_flag,
+            </if>
+            <if test="n14_text != null">
+                n14_text,
+            </if>
+
+            <if test="n15_flag != null">
+                n15_flag,
+            </if>
+            <if test="n15_text != null">
+                n15_text,
+            </if>
+
+            <if test="n16_flag != null">
+                n16_flag,
+            </if>
+            <if test="n16_text != null">
+                n16_text,
+            </if>
+
+            <if test="n17_flag != null">
+                n17_flag,
+            </if>
+            <if test="n17_text != null">
+                n17_text,
+            </if>
+
+            <if test="n18_flag != null">
+                n18_flag,
+            </if>
+            <if test="n18_text != null">
+                n18_text,
+            </if>
+
+            <if test="n19_flag != null">
+                n19_flag,
+            </if>
+            <if test="n19_text != null">
+                n19_text,
+            </if>
+
+            <if test="n20_flag != null">
+                n20_flag,
+            </if>
+            <if test="n20_text != null">
+                n20_text,
+            </if>
+
+            <if test="n21_flag != null">
+                n21_flag,
+            </if>
+            <if test="n21_text != null">
+                n21_text,
+            </if>
+
+            <if test="n22_flag != null">
+                n22_flag,
+            </if>
+            <if test="n22_text != null">
+                n22_text,
+            </if>
+
+            <if test="n23_flag != null">
+                n23_flag,
+            </if>
+            <if test="n23_text != null">
+                n23_text,
+            </if>
+
+
+            <if test="jieLun_text != null">
+                jieLun_text,
+            </if>
+            <if test="other_text != null">
+                other_text,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="project_name != null">
+                #{project_name,jdbcType=VARCHAR},
+            </if>
+            <if test="entry_name != null">
+                #{entry_name,jdbcType=VARCHAR},
+            </if>
+            <if test="user!=null and user.id != null">
+                #{user.id,jdbcType=VARCHAR},
+            </if>
+            <if test="touYing_date != null">
+                #{touYing_date,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="n1_flag != null">
+                #{n1_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n1_text != null">
+                #{n1_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n2_flag != null">
+                #{n2_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n2_text != null">
+                #{n2_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n3_flag != null">
+                #{n3_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n3_text != null">
+                #{n3_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n4_flag != null">
+                #{n4_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n4_text != null">
+                #{n4_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n5_flag != null">
+                #{n5_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n5_text != null">
+                #{n5_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n6_flag != null">
+                #{n6_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n6_text != null">
+                #{n6_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n7_flag != null">
+                #{n7_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n7_text != null">
+                #{n7_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n8_flag != null">
+                #{n8_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n8_text != null">
+                #{n8_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n9_flag != null">
+                #{n9_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n9_text != null">
+                #{n9_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n10_flag != null">
+                #{n10_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n10_text != null">
+                #{n10_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n11_flag != null">
+                #{n11_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n11_text != null">
+                #{n11_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n12_flag != null">
+                #{n12_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n12_text != null">
+                #{n12_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n13_flag != null">
+                #{n13_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n13_text != null">
+                #{n13_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n14_flag != null">
+                #{n14_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n14_text != null">
+                #{n14_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n15_flag != null">
+                #{n15_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n15_text != null">
+                #{n15_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n16_flag != null">
+                #{n16_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n16_text != null">
+                #{n16_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n17_flag != null">
+                #{n17_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n17_text != null">
+                #{n17_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n18_flag != null">
+                #{n18_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n18_text != null">
+                #{n18_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n19_flag != null">
+                #{n19_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n19_text != null">
+                #{n19_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n20_flag != null">
+                #{n20_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n20_text != null">
+                #{n20_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n21_flag != null">
+                #{n21_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n21_text != null">
+                #{n21_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n22_flag != null">
+                #{n22_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n22_text != null">
+                #{n22_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="n23_flag != null">
+                #{n23_flag,jdbcType=BIGINT},
+            </if>
+            <if test="n23_text != null">
+                #{n23_text,jdbcType=VARCHAR},
+            </if>
+
+            <if test="jieLun_text != null">
+                #{jieLun_text,jdbcType=VARCHAR},
+            </if>
+            <if test="other_text != null">
+                #{other_text,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+    </insert>
+
+    <select id="touYingPage" parameterType="Map" resultMap="TouYingResult">
+        select * from t_word_touying
+        as q
+        LEFT JOIN act_id_user as u ON q.userID = u.ID_
+        <where>
+            <if test="searchType =='id'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='project_name'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='entry_name'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ALLNAME_'and searchValue!=''and searchValue!='' ">
+                and u.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and q.touYing_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+        order by touYing_date desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="touYingCount" parameterType="Map" resultType="int">
+        select count(1) from t_word_touying as q
+        LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+        <where>
+            <if test="searchType =='id'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='project_name'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='entry_name'and searchValue!=''and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ALLNAME_'and searchValue!=''and searchValue!='' ">
+                and u.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and q.touYing_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="TouYingResult">
+		select *
+	 	 from  t_word_touying as q
+          LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+          where q.id=#{id}
+	</select>
+</mapper> 

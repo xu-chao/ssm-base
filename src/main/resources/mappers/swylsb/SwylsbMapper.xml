@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.swylsb.SwylsbDao">
+    <resultMap id="swylsb" type="com.java.activiti.model.swylsb.Swylsb">
+        <id property="ID" column="ID"/>
+        <result property="userId" column="userId"/>
+        <result property="projectID" column="projectID"/>
+        <result property="sbID" column="sbID"/>
+        <result property="sbName" column="sbName"/>
+        <result property="sbClass" column="sbClass"/>
+        <result property="sbStatus" column="sbStatus"/>
+        <result property="bzlx" column="bzlx"/>
+        <result property="yyqk" column="yyqk"/>
+        <result property="jyjbStatus" column="jyjbStatus"/>
+        <result property="gydw" column="gydw"/>
+        <result property="azdw" column="azdw"/>
+        <result property="xssyStatus" column="xssyStatus"/>
+        <result property="sbsl" column="sbsl"/>
+        <result property="fzrUser" column="fzrUser"/>
+        <result property="startDate" column="startDate"/>
+        <result property="completeDate" column="completeDate"/>
+        <result property="approachDate" column="approachDate"/>
+        <result property="sbDate" column="sbDate"/>
+        <association property="project" column="projectID" select="com.java.activiti.dao.ProjectDao.findById"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="swylsbJd" column="jdId" select="com.java.activiti.dao.swylsb.SwylsbJdDao.findById"/>
+        <association property="swylsbXq" column="xqId" select="com.java.activiti.dao.swylsb.SwylsbXqDao.findById"/>
+        <association property="sblx"  column="sbStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="jyjb"  column="jyjbStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="xuyao"  column="xssyStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+
+    </resultMap>
+
+    <select id="swylsbPage" parameterType="Map" resultMap="swylsb">
+        select * from sw_ylsb as sy
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+            <if test="projectID!=null">
+                and projectID = #{projectID}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and sbDate between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="swylsbCount" parameterType="Map" resultType="int">
+        select count(1) from sw_ylsb as sy
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and sbDate between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="swylsb">
+		select * from sw_ylsb where ID=#{ID}
+	</select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectSwylsbName"
+            parameterType="java.lang.String" resultMap="swylsb">
+		select * from sw_ylsb sy
+		where
+		sy.sbName like CONCAT('%',#{sbName},'%')
+	</select>
+
+    <insert id="addSwylsb" parameterType="swylsb">
+        insert into sw_ylsb
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="ID != null" >
+                ID,
+            </if>
+            <if test="userId != null" >
+                userId,
+            </if>
+            <if test="projectID != null" >
+                projectID,
+            </if>
+            <if test="sbID != null" >
+                sbID,
+            </if>
+            <if test="sbName != null" >
+                sbName,
+            </if>
+            <if test="sbClass != null" >
+                sbClass,
+            </if>
+            <if test="sbStatus != null" >
+                sbStatus,
+            </if>
+            <if test="bzlx != null" >
+                bzlx,
+            </if>
+            <if test="yyqk != null" >
+                yyqk,
+            </if>
+            <if test="jyjbStatus != null" >
+                jyjbStatus,
+            </if>
+            <if test="gydw != null" >
+                gydw,
+            </if>
+            <if test="azdw != null" >
+                azdw,
+            </if>
+            <if test="xssyStatus != null" >
+                xssyStatus,
+            </if>
+            <if test="sbsl != null" >
+                sbsl,
+            </if>
+            <if test="fzrUser != null" >
+                fzrUser,
+            </if>
+            <if test="startDate != null" >
+                startDate,
+            </if>
+            <if test="completeDate != null" >
+                completeDate,
+            </if>
+            <if test="approachDate != null" >
+                approachDate,
+            </if>
+               <if test="xqId != null" >
+                   xqId,
+            </if>   <if test="jdId != null" >
+            jdId,
+            </if>
+            <if test="sbDate != null" >
+                sbDate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="ID != null" >
+                ID,
+            </if>
+            <if test="userId != null" >
+                userId,
+            </if>
+            <if test="projectID != null" >
+                projectID,
+            </if>
+            <if test="sbID != null" >
+                sbID,
+            </if>
+            <if test="sbName != null" >
+                sbName,
+            </if>
+            <if test="sbClass != null" >
+                sbClass,
+            </if>
+            <if test="sbStatus != null" >
+                sbStatus,
+            </if>
+            <if test="bzlx != null" >
+                bzlx,
+            </if>
+            <if test="yyqk != null" >
+                yyqk,
+            </if>
+            <if test="jyjbStatus != null" >
+                jyjbStatus,
+            </if>
+            <if test="gydw != null" >
+                gydw,
+            </if>
+            <if test="azdw != null" >
+                azdw,
+            </if>
+            <if test="xssyStatus != null" >
+                xssyStatus,
+            </if>
+            <if test="sbsl != null" >
+                sbsl,
+            </if>
+            <if test="fzrUser != null" >
+                fzrUser,
+            </if>
+            <if test="startDate != null" >
+                startDate,
+            </if>
+            <if test="completeDate != null" >
+                completeDate,
+            </if>
+            <if test="approachDate != null" >
+                approachDate,
+            </if>  <if test="xqId != null" >
+            xqId,
+            </if><if test="jdId != null" >
+            jdId,
+            </if>
+            <if test="sbDate != null" >
+                sbDate,
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSwylsb" parameterType="swylsb">
+        update sw_ylsb
+        <set>
+            <if test="userId!=null and userId!='' ">
+                userId=#{userId},
+            </if>
+            <if test="projectID!=null ">
+                projectID=#{projectID},
+            </if>
+            <if test="sbID!=null ">
+                sbID=#{sbID},
+            </if>
+            <if test="sbName!=null and sbName!='' ">
+                sbName=#{sbName},
+            </if>
+            <if test="sbClass!=null and sbClass!='' ">
+                sbClass=#{sbClass},
+            </if>
+            <if test="sbStatus!=null">
+                sbStatus=#{sbStatus},
+            </if>
+            <if test="bzlx!=null ">
+                bzlx=#{bzlx},
+            </if>
+            <if test="yyqk!=null ">
+                yyqk=#{yyqk},
+            </if>
+            <if test="jyjbStatus!=null ">
+                jyjbStatus=#{jyjbStatus},
+            </if>
+            <if test="gydw!=null ">
+                gydw=#{gydw},
+            </if>
+            <if test="azdw!=null ">
+                azdw=#{azdw},
+            </if>
+            <if test="xssyStatus!=null ">
+                xssyStatus=#{xssyStatus},
+            </if>
+            <if test="sbsl!=null ">
+                sbsl=#{sbsl},
+            </if>
+            <if test="fzrUser!=null ">
+                fzrUser=#{fzrUser},
+            </if>
+            <if test="startDate!=null ">
+                startDate=#{startDate},
+            </if>
+            <if test="completeDate!=null ">
+                completeDate=#{completeDate},
+            </if>
+            <if test="approachDate!=null ">
+                approachDate=#{approachDate},
+            </if>   <if test="xqId!=null ">
+            xqId=#{xqId},
+            </if> <if test="jdId!=null ">
+            jdId=#{jdId},
+            </if>
+            <if test="sbDate!=null ">
+                sbDate=#{sbDate},
+            </if>
+        </set>
+        where ID=#{ID}
+    </update>
+
+    <delete id="deleteSwylsbById" parameterType="java.util.List">
+        delete from sw_ylsb where ID in
+        <foreach collection="list" item="ID" index="index" open="(" separator="," close=")">
+            #{ID}
+        </foreach>
+    </delete>
+
+    <select id="findSwylsb" parameterType="swylsb" resultMap="swylsb">
+        select * from sw_ylsb
+        <where>
+                <if test="ID!=null ">
+                and ID = #{ID}
+            </if>
+            <if test="sbName!=null and sbName!='' ">
+                and sbName = #{sbName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSwylsbBySwylsbID" parameterType="java.lang.Integer" resultType="swylsb">
+		select * from sw_ylsb
+		where ID = #{ID}
+	</select>
+
+    <select id="selectALL" resultType="swylsb">
+		select * from sw_ylsb
+	</select>
+
+    <!-- 根据型号/图号 模糊查询型号/图号 自动补全 -->
+<!--    <select id="selectSUPPLIER_PERSONLike" parameterType="java.lang.String" resultMap="supplier">-->
+<!--	    select SUPPLIER_PERSON from erp_supplier-->
+<!--		where-->
+<!--		SUPPLIER_PERSON like CONCAT('%',#{SUPPLIER_PERSON},'%')-->
+<!--	</select>-->
+
+    <!-- 查询所有供应商 -->
+    <select id="fndAllSwylsb" resultMap="swylsb">
+	    select * from sw_ylsb
+	</select>
+</mapper>

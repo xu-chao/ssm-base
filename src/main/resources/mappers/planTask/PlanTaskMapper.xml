@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.planTask.PlanTaskDao">
+    <resultMap type="com.java.activiti.model.planTask.PlanTask" id="PlanTaskResult">
+        <id property="ID" column="ID"/>
+        <result property="ptID" column="ptID"/>
+        <result property="ptleimu" column="ptleimu"/>
+        <result property="ptrwmc" column="ptrwmc"/>
+        <result property="pttuhao" column="pttuhao"/>
+        <result property="ptsbmc" column="ptsbmc"/>
+        <result property="ptxinghao" column="ptxinghao"/>
+        <result property="ptsuliang" column="ptsuliang"/>
+        <result property="ptgz" column="ptgz"/>
+        <result property="ptbz" column="ptbz"/>
+        <result property="ptdate" column="ptdate"/>
+        <result property="state" column="state"/>
+        <result property="processInstanceId" column="processInstanceId"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="project" column="ProjectID" select="com.java.activiti.dao.ProjectDao.findById"/>
+        <association property="ptxitong" javaType="com.java.activiti.model.MyType">
+            <id property="typeID" column="typeID"/>
+            <result property="typeCode" column="typeCode"/>
+            <result property="typeName" column="typeName"/>
+        </association>
+        <association property="ptdanwei" javaType="com.java.activiti.model.MyType">
+            <id property="typeID" column="typeID"/>
+            <result property="typeCode" column="typeCode"/>
+            <result property="typeName" column="typeName"/>
+        </association>
+        <association property="ptlx" javaType="com.java.activiti.model.MyType">
+            <id property="typeID" column="typeID"/>
+            <result property="typeCode" column="typeCode"/>
+            <result property="typeName" column="typeName"/>
+        </association>
+    </resultMap>
+
+    <select id="planTaskPage" parameterType="Map" resultMap="PlanTaskResult">
+        select *
+        from t_plan_task
+        as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+        <where>
+            and t1.typeCode = "ptxitong"
+            and t2.typeCode = "ptdanwei"
+            and t3.typeCode = "ptlx"
+            <if test="userId!=null and userId!='' ">
+                and pt.userId = #{userId}
+            </if>
+
+        </where>
+        order by ptdate desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="planTaskCount" parameterType="Map" resultType="int">
+        select count(1) from t_plan_task
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="planTaskThoughtPage" parameterType="Map" resultMap="PlanTaskResult">
+        select * from t_plan_task
+        as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+        <where>
+            <if test="searchType =='ptID'and searchType!=null and searchType!='' and searchValue!=null  and searchValue!='' ">
+                and pt.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ParkName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pa.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ProjectName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pj.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and ptdate between #{startDate} and #{endDate}
+            </if>
+            and t1.typeCode = "ptxitong"
+            and t2.typeCode = "ptdanwei"
+            and t3.typeCode = "ptlx"
+
+        </where>
+        order by ptdate desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="planTaskThoughtCount" parameterType="Map" resultType="int">
+        select count(1) from t_question_back
+        as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+        <where>
+            <if test="searchType =='ptID'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pt.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ALLNAME_'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and u.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ParkName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pa.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ProjectName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pj.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and ptdate between #{startDate} and #{endDate}
+            </if>
+        </where>
+
+    </select>
+    <insert id="addPlanTask" parameterType="com.java.activiti.model.planTask.PlanTask">
+        insert into t_plan_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ptID != null">
+                ptID,
+            </if>
+            <if test="user!=null and user.id != null">
+                userId,
+            </if>
+            <if test="project!=null and project.projectID != null">
+                ProjectID,
+            </if>
+            <if test="ptxitong!=null and ptxitong.typeID != null">
+                ptxitong,
+            </if>
+            <if test="ptleimu != null">
+                ptleimu,
+            </if>
+            <if test="ptrwmc != null">
+                ptrwmc,
+            </if>
+            <if test="pttuhao != null">
+                pttuhao,
+            </if>
+            <if test="ptsbmc != null">
+                ptsbmc,
+            </if>
+            <if test="ptxinghao != null">
+                ptxinghao,
+            </if>
+            <if test="ptdanwei!=null and ptdanwei.typeID != null">
+                ptdanwei,
+            </if>
+            <if test="ptsuliang != null">
+                ptsuliang,
+            </if>
+            <if test="ptgz != null">
+                ptgz,
+            </if>
+            <if test="ptlx!=null and ptlx.typeID != null">
+                ptlx,
+            </if>
+            <if test="ptbz != null">
+                ptbz,
+            </if>
+            <if test="ptdate != null">
+                ptdate,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="processInstanceId != null">
+                processInstanceId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ptID != null">
+                #{ptID,jdbcType=VARCHAR},
+            </if>
+            <if test="user!=null and user.id != null">
+                #{user.id,jdbcType=VARCHAR},
+            </if>
+            <if test="project!=null and project.projectID != null">
+                #{project.projectID,jdbcType=INTEGER},
+            </if>
+            <if test="ptxitong!=null and ptxitong.typeID != null">
+                #{ptxitong.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptleimu != null">
+                #{ptleimu,jdbcType=VARCHAR},
+            </if>
+            <if test="ptrwmc != null">
+                #{ptrwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="pttuhao != null">
+                #{pttuhao,jdbcType=VARCHAR},
+            </if>
+            <if test="ptsbmc != null">
+                #{ptsbmc,jdbcType=VARCHAR},
+            </if>
+            <if test="ptxinghao != null">
+                #{ptxinghao,jdbcType=VARCHAR},
+            </if>
+            <if test="ptdanwei!=null and ptdanwei.typeID != null">
+                #{ptdanwei.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptsuliang!=null">
+                #{ptsuliang,jdbcType=BIGINT},
+            </if>
+            <if test="ptgz != null">
+                #{ptgz,jdbcType=VARCHAR},
+            </if>
+            <if test="ptlx!=null and ptlx.typeID != null">
+                #{ptlx.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptbz != null">
+                #{ptbz,jdbcType=VARCHAR},
+            </if>
+            <if test="ptdate != null">
+                #{ptdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="processInstanceId != null">
+                #{processInstanceId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="PlanTaskResult">
+		select *
+	 	 from  t_plan_task
+             as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+          where pt.ptID=#{ptID}
+                 and t1.typeCode = "ptxitong"
+             and t2.typeCode = "ptdanwei"
+             and t3.typeCode = "ptlx"
+	</select>
+
+    <select id="findPlanTaskById" parameterType="String" resultMap="PlanTaskResult">
+		select *
+	 	 from  t_plan_task
+             as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+          where pt.ID=#{ptID}
+                 and t1.typeCode = "ptxitong"
+             and t2.typeCode = "ptdanwei"
+             and t3.typeCode = "ptlx"
+	</select>
+
+    <update id="updatePlanTask" parameterType="com.java.activiti.model.planTask.PlanTask">
+        update t_plan_task
+        <set>
+            <if test="user!=null and user.id != null">
+                userId = #{user.id,jdbcType=VARCHAR},
+            </if>
+            <if test="project!=null and project.projectID != null">
+                ProjectID = #{project.projectID,jdbcType=INTEGER},
+            </if>
+            <if test="ptxitong!=null and ptxitong.typeID != null">
+                ptxitong = #{ptxitong.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptleimu != null">
+                ptleimu = #{ptleimu,jdbcType=VARCHAR},
+            </if>
+            <if test="ptrwmc != null">
+                ptrwmc = #{ptrwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="pttuhao != null">
+                pttuhao =#{pttuhao,jdbcType=VARCHAR},
+            </if>
+            <if test="ptsbmc != null">
+                ptsbmc = #{ptsbmc,jdbcType=VARCHAR},
+            </if>
+            <if test="ptxinghao != null">
+                ptxinghao = #{ptxinghao,jdbcType=VARCHAR},
+            </if>
+            <if test="ptdanwei!=null and ptdanwei.typeID != null">
+                ptdanwei = #{ptdanwei.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptsuliang!=null">
+                ptsuliang = #{ptsuliang,jdbcType=BIGINT},
+            </if>
+            <if test="ptgz != null">
+                ptgz = #{ptgz,jdbcType=VARCHAR},
+            </if>
+            <if test="ptlx!=null and ptlx.typeID != null">
+                ptlx = #{ptlx.typeID,jdbcType=INTEGER},
+            </if>
+            <if test="ptbz != null">
+                ptbz = #{ptbz,jdbcType=VARCHAR},
+            </if>
+
+            <if test="ptdate != null">
+                ptdate = #{ptdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId}
+            </if>
+        </set>
+        where ID = #{ID}
+    </update>
+
+    <select id="getPlanTaskByTaskId" parameterType="String" resultMap="PlanTaskResult">
+		select *
+	 	 from  t_plan_task
+             as pt
+        LEFT JOIN act_id_user as u ON pt.userId = u.ID_
+        LEFT JOIN t_type as t1 ON pt.ptxitong= t1.typeID
+        LEFT JOIN t_type as t2 ON pt.ptdanwei= t2.typeID
+        LEFT JOIN t_type as t3 ON pt.ptlx= t3.typeID
+        LEFT JOIN t_project as pj ON pt.ProjectID = pj.ProjectID
+          where pt.processInstanceId=#{processInstanceId}
+                 and t1.typeCode = "ptxitong"
+             and t2.typeCode = "ptdanwei"
+             and t3.typeCode = "ptlx"
+	</select>
+
+</mapper> 

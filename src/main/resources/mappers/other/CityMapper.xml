@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.CityDao">
+    <resultMap id="city" type="com.java.activiti.model.City">
+        <id property="cityID" column="CityID"/>
+        <result property="cityName" column="CityName"/>
+        <result property="longitude" column="Longitude"/>
+        <result property="latitude" column="Latitude"/>
+        <result property="cityPinYin" column="PinYin"/>
+    </resultMap>
+
+    <select id="cityPage" parameterType="Map" resultMap="city">
+        select * from t_city
+        <where>
+            <if test="cityName!=null and cityName!='' ">
+                and CityName = #{cityName}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="cityCount" parameterType="Map" resultType="int">
+        select count(1) from t_city
+        <where>
+            <if test="cityName!=null and cityName!='' ">
+                and CityName = #{cityName}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectCityName"
+            parameterType="java.lang.String" resultMap="city">
+		select c.CityID AS CityID, c.CityName AS cityName from t_city c
+		where
+		c.CityName like CONCAT('%',#{cityName},'%')
+	</select>
+
+    <insert id="addCity" parameterType="city">
+		insert into t_city values(#{cityID},#{cityName},#{longitude},#{latitude},#{cityPinYin});
+	</insert>
+
+    <update id="updateCity" parameterType="city">
+        update t_city
+        <set>
+            <if test="cityName!=null and cityName!='' ">
+                CityName=#{cityName},
+            </if>
+            <if test="longitude!=null and longitude!='' ">
+                Longitude=#{longitude},
+            </if>
+            <if test="latitude!=null and latitude!='' ">
+                Latitude=#{latitude},
+            </if>
+        </set>
+        where CityID=#{cityID}
+    </update>
+
+    <delete id="deleteCityById" parameterType="java.util.List">
+        delete from t_city where CityID in
+        <foreach collection="list" item="cityID" index="index" open="(" separator="," close=")">
+            #{cityID}
+        </foreach>
+    </delete>
+
+    <!-- 查询city对应的城市是否相同 -->
+    <select id="findCity" parameterType="city" resultMap="city">
+        select * from t_city
+        <where>
+            <if test="cityID!=null and cityID!='' ">
+                and CityID = #{cityID}
+            </if>
+            <if test="cityName!=null and cityName!='' ">
+                and CityName = #{cityName}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询city对应的城市是否相同 -->
+    <select id="findCityByName" parameterType="java.lang.String" resultMap="city">
+        select * from t_city
+        <where>
+            <if test="cityName!=null and cityName!='' ">
+                and CityName = #{cityName}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectCityByCityID" parameterType="java.lang.Integer" resultType="city">
+		select * from t_city
+		where CityID = #{cityID}
+	</select>
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectALL" resultType="city">
+		select * from t_city
+	</select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultType="city">
+		select * from t_city
+		where CityID = #{CityID}
+	</select>
+</mapper>

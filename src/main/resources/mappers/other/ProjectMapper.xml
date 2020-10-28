@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.ProjectDao">
+    <resultMap id="project" type="com.java.activiti.model.Project">
+        <id property="projectID" column="ProjectID"/>
+        <result property="projectName" column="ProjectName"/>
+        <association property="park" javaType="com.java.activiti.model.Park">
+            <result property="parkID" column="ParkID"/>
+            <result property="parkName" column="ParkName"/>
+            <result property="parkAb" column="ParkAb"/>
+        </association>
+        <association property="city" javaType="com.java.activiti.model.City">
+            <result property="cityID" column="CityID"/>
+            <result property="cityName" column="CityName"/>
+            <result property="longitude" column="Longitude"/>
+            <result property="latitude" column="Latitude"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="parkClass" type="com.java.activiti.model.Park">
+        <result property="parkID" column="ParkID"/>
+        <result property="parkName" column="ParkName"/>
+        <result property="parkAb" column="ParkAb"/>
+    </resultMap>
+
+    <select id="projectPage" parameterType="Map" resultMap="project">
+        select pr.ProjectID,pr.ProjectName,p.ParkID,p.ParkName,p.CityID,c.CityName,c.Longitude,c.Latitude
+        from t_project pr,t_park p,t_city c
+        where pr.ParkID = p.ParkID AND p.CityID = c.CityID
+        <if test="projectName!=null and projectName!='' ">
+            and pr.ProjectName = #{projectName}
+        </if>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="projectCount" parameterType="Map" resultType="int">
+        select count(1)
+        from t_project pr,t_park p,t_city c
+        where pr.ParkID = p.ParkID AND p.CityID = c.CityID
+        <if test="parkName!=null and parkName!='' ">
+            and ParkName = #{parkName}
+        </if>
+        <if test="cityName!=null and cityName!='' ">
+            and CityName = #{cityName}
+        </if>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+    <select id="searchAllProject" resultMap="project">
+    		select c.ProjectID,c.ProjectName  from t_project c
+    	</select>
+    <!-- 根据项目名称模糊查询项目 自动补全 -->
+    <select id="selectProjectName"
+            parameterType="java.lang.String" resultMap="project">
+    		select c.ProjectID,c.ProjectName  from t_project c
+    		where
+    		c.ProjectName like CONCAT('%',#{projectName},'%')
+    	</select>
+
+    <select id="findParkByCityID"
+            parameterType="java.lang.String" resultMap="parkClass">
+    		select  p.ParkID ,p.ParkName from t_park p
+    		where
+    		p.CityID = #{cityID}
+    	</select>
+
+    <select id="findProjectByParkID"
+            parameterType="java.lang.String" resultMap="project">
+    		select  pj.ProjectID ,pj.ProjectName ,pa.* from t_project pj
+    		left join t_park pa on pj.ParkID = pa.ParkID
+    		where
+    		pj.ParkID = #{parkID}
+    	</select>
+
+    <insert id="addProject" parameterType="project">
+        insert into t_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectID != null">
+                ProjectID,
+            </if>
+            <if test="projectName != null">
+                ProjectName,
+            </if>
+            <if test="park!=null and park.parkID != null">
+                ParkID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectID != null">
+                #{projectID,jdbcType=BIGINT},
+            </if>
+            <if test="projectName != null">
+                #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="park!=null and park.parkID != null">
+                #{park.parkID,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateProject" parameterType="project">
+        update t_project
+        <set>
+            <if test="projectName!=null and projectName!='' ">
+                ProjectName=#{projectName},
+            </if>
+            <if test="park.parkID!=null and park.parkID!='' ">
+                ParkID=#{park.parkID},
+            </if>
+        </set>
+        where ProjectID=#{projectID}
+    </update>
+
+    <delete id="deleteProjectById" parameterType="java.util.List">
+        delete from t_project where ProjectID in
+        <foreach collection="list" item="projectID" index="index" open="(" separator="," close=")">
+            #{projectID}
+        </foreach>
+    </delete>
+
+    <!-- 查询city对应的城市是否相同 -->
+    <select id="findProject" parameterType="project" resultMap="project">
+        select * from t_project
+        <where>
+            <if test="projectID!=null and projectID!='' ">
+                and ProjectID = #{projectID}
+            </if>
+            <if test="projectName!=null and projectName!='' ">
+                and ProjectName = #{projectName}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectProjectByProjectID" parameterType="java.lang.Integer" resultType="project">
+    		select * from t_project
+    		where ProjectID = #{projectID}
+    </select>
+
+    <!--    <select id="findById" parameterType="java.lang.Integer" resultType="project">-->
+    <!--    		select * from t_project-->
+    <!--    		where ProjectID = #{projectID}-->
+    <!--    	</select>-->
+
+    <select id="findById" parameterType="int" resultMap="project">
+        select pr.ProjectID,pr.ProjectName,p.ParkID,p.ParkName,p.Abbreviation AS ParkAb,p.CityID,c.CityName,c.Longitude,c.Latitude
+        from t_project pr,t_park p,t_city c
+        where pr.ParkID = p.ParkID AND p.CityID = c.CityID AND ProjectID=#{ProjectID}
+    </select>
+
+</mapper>

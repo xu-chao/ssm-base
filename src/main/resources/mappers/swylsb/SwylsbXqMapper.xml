@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.swylsb.SwylsbXqDao">
+    <resultMap id="SwylsbXq" type="com.java.activiti.model.swylsb.SwylsbXq">
+        <id property="ID" column="ID"/>
+        <result property="sbzt" column="sbzt"/>
+        <result property="ztbz" column="ztbz"/>
+        <result property="wtfk" column="wtfk"/>
+        <result property="yjsm" column="yjsm"/>
+    </resultMap>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="SwylsbXq">
+        select * from sw_ylsb_xq
+        where ID = #{ID}
+    </select>
+
+    <update id="updateSwylsbXq" parameterType="SwylsbXq">
+        REPLACE INTO sw_ylsb_xq(ID,sbzt,ztbz,wtfk) VALUES
+            (#{ID},#{sbzt},#{ztbz},#{wtfk})
+    </update>
+
+</mapper>

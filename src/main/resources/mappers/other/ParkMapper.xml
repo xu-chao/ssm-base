@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.ParkDao">
+    <resultMap id="park" type="com.java.activiti.model.Park">
+        <id property="parkID" column="ParkID"/>
+        <result property="parkName" column="ParkName"/>
+        <result property="parkAb" column="Abbreviation"/>
+<!--        <association property="city" column="CityID" select="com.java.activiti.dao.CityDao.findById"/>-->
+        <association property="city" javaType="com.java.activiti.model.City">
+            <result property="cityID" column="CityID"/>
+            <result property="cityName" column="CityName"/>
+            <result property="longitude" column="Longitude"/>
+            <result property="latitude" column="Latitude"/>
+        </association>
+    </resultMap>
+    <!--    select p.ParkID,p.ParkName,p.CityID,c.CityName,c.Longitude,c.Latitude-->
+    <select id="parkPage" parameterType="Map" resultMap="park">
+        select *
+        from t_park p,t_city c where p.CityID = c.CityID
+        <if test="parkName!=null and parkName!='' ">
+            and ParkName = #{parkName}
+        </if>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="parkCount" parameterType="Map" resultType="int">
+        select count(1)
+        from t_park p,t_city c where p.CityID = c.CityID
+        <if test="parkName!=null and parkName!='' ">
+            and p.ParkName = #{parkName}
+        </if>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+    <select id="selectALL" resultMap="park">
+    		select  * from t_park
+    	</select>
+    <!-- 根据公园名称模糊查询公园 自动补全 -->
+    <select id="selectParkName" parameterType="java.lang.String" resultMap="park">
+    		select  p.ParkID ,p.ParkName from t_park p
+    		where
+    		p.ParkName like CONCAT('%',#{parkName},'%')
+    	</select>
+
+    <insert id="addPark" parameterType="park">
+    		insert into t_park values(#{parkID},#{parkName},#{city.cityID},#{parkAb});
+    	</insert>
+
+    <update id="updatePark" parameterType="park">
+        update t_park
+        <set>
+            <if test="parkName!=null and parkName!='' ">
+                ParkName=#{parkName},
+            </if>
+            <if test="parkAb!=null and parkAb!='' ">
+                Abbreviation=#{parkAb},
+            </if>
+            <if test="city.cityID!=null and city.cityID!='' ">
+                CityID=#{city.cityID},
+            </if>
+        </set>
+        where ParkID=#{parkID}
+    </update>
+
+    <delete id="deleteParkById" parameterType="java.util.List">
+        delete from t_park where ParkID in
+        <foreach collection="list" item="parkID" index="index" open="(" separator="," close=")">
+            #{parkID}
+        </foreach>
+    </delete>
+
+    <!-- 查询park对应的公园是否相同 -->
+    <select id="findPark" parameterType="park" resultMap="park">
+        select * from t_park
+        <where>
+            <if test="parkID!=null and parkID!='' ">
+                and ParkID = #{parkID}
+            </if>
+            <if test="parkName!=null and parkName!='' ">
+                and ParkName = #{parkName}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="park">
+        select * from t_park
+        where ParkID = #{ParkID}
+    </select>
+<!--    <select id="findById" parameterType="java.lang.Integer" resultMap="park">-->
+<!--        select p.ParkID,p.ParkName,c.CityID,c.CityName from t_park p,t_city c-->
+<!--        where p.CityID = c.CityID AND p.ParkID = #{ParkID}-->
+<!--    </select>-->
+
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectParkByParkID" parameterType="java.lang.Integer" resultType="park">
+    		select * from t_park
+    		where ParkID = #{parkID}
+    </select>
+
+    <select id="findParkByCityID" resultType="park">
+    		select * from t_park
+    		where CityID = #{cityID} and parkName = #{parkName}
+    </select>
+</mapper> 

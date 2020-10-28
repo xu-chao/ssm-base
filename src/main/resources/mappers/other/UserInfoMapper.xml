@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java.activiti.dao.UserInfoDao">
+
+    <resultMap id="user" type="com.java.activiti.model.User">
+        <result property="id" column="ID_"/>
+        <result property="firstName" column="FIRST_"/>
+        <result property="lastName" column="LAST_"/>
+        <result property="password" column="PWD_"/>
+        <result property="lastLoginTime" column="LAST_LOGIN_TIME_"/>
+        <result property="status" column="STATUS_"/>
+    </resultMap>
+
+    <select id="selectByUserID" resultMap="user">
+        select
+            u.ID_,
+            u.FIRST_,
+            u.LAST_,
+            u.PWD_,
+            u.STATUS_
+        from
+            act_id_user u
+        where
+            u.ID_ = #{id}
+    </select>
+
+    <select id="selectByName" resultMap="user">
+        select
+            u.ID_,
+            u.FIRST_,
+            u.LAST_,
+            u.PWD_,
+            u.STATUS_
+        from
+        act_id_user u
+        where
+        u.FIRST_ = #{firstName}
+    </select>
+
+    <select id="selectAll" resultMap="user">
+        select
+            u.ID_,
+            u.FIRST_,
+            u.LAST_,
+            u.PWD_,
+            u.STATUS_
+        from
+        act_id_user u
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true">
+        insert into act_id_user(ID_,FIRST_,LAST_,PWD_,STATUS_)
+        values (#{ID},#{firstName},#{lastName},#{password},#{status})
+    </insert>
+
+    <update id="updateUser" parameterType="user">
+        update act_id_user set
+        <if test="lastLoginTime!=null">
+            LAST_LOGIN_TIME_ = #{lastLoginTime},
+        </if>
+        <if test="password!=null and password!='' ">
+            PWD_ = #{password}
+        </if>
+        where
+        ID_ = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from act_id_user
+        where
+        ID_ = #{id}
+    </delete>
+</mapper>

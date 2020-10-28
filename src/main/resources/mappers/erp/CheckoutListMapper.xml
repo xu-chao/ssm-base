@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.CheckoutListDao">
+    <resultMap type="com.java.activiti.model.erp.CheckoutList" id="CheckoutListResult">
+        <id property="checkoutListId" column="checkoutListId"/>
+        <collection property="checkout" column="checkoutId"
+                    ofType="com.java.activiti.model.erp.Checkout">
+            <result property="checkoutId" column="checkoutId"/>
+            <result property="checkoutDate" column="checkoutDate"/>
+            <result property="SUPPLIER_ID" column="SUPPLIER_ID"/>
+            <result property="checkoutMount" column="checkoutMount"/>
+            <result property="checkoutNotQuaMount" column="checkoutNotQuaMount"/>
+            <result property="checkoutType" column="checkoutType"/>
+            <result property="checkoutMaterial" column="checkoutMaterial"/>
+            <result property="checkoutPerson" column="checkoutPerson"/>
+            <result property="checkoutStatus" column="checkoutStatus"/>
+            <result property="checkoutDataStatus" column="checkoutDataStatus"/>
+            <result property="checkoutLabelStatus" column="checkoutLabelStatus"/>
+            <result property="checkoutNum" column="checkoutNum"/>
+            <result property="checkoutFlag" column="checkoutFlag"/>
+            <result property="checkoutNotQuaId" column="checkoutNotQuaId"/>
+            <association property="supplier" column="SUPPLIER_ID" select="com.java.activiti.dao.erp.SupplierDao.findById"/>
+            <association property="notQualified" column="checkoutNotQuaId" select="com.java.activiti.dao.erp.NotQualifiedDao.findById"/>
+        </collection>
+    </resultMap>
+
+    <select id="checkoutListPage" parameterType="Map" resultMap="CheckoutListResult">
+        select * from erp_checkout_list
+        <where>
+            <if test="checkoutId!=null and checkoutId!='' ">
+                and checkoutId = #{checkoutId}
+            </if>
+        </where>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="checkoutListCount" parameterType="Map" resultType="int">
+        select count(1) from erp_checkout_list
+        <where>
+            <if test="checkoutId!=null and checkoutId!='' ">
+                and checkoutId = #{checkoutId}
+            </if>
+        </where>
+    </select>
+</mapper> 

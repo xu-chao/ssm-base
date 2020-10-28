@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.EquitDao">
+    <resultMap type="com.java.activiti.model.Equit" id="EquitResult">
+        <id property="id" column="id"/>
+        <result property="EID" column="EID"/>
+        <result property="ApplicantData" column="ApplicantData"/>
+        <result property="EType" column="EType"/>
+        <result property="NID" column="NID"/>
+        <result property="EPName" column="EPName"/>
+        <result property="EProjectName" column="EProjectName"/>
+        <result property="ESubName" column="ESubName"/>
+        <result property="ESysName" column="ESysName"/>
+        <result property="ECode" column="ECode"/>
+        <result property="EProduct" column="EProduct"/>
+        <result property="ESpecs" column="ESpecs"/>
+        <result property="EUnit" column="EUnit"/>
+        <result property="EMount" column="EMount"/>
+        <result property="ENote" column="ENote"/>
+        <result property="ERMount" column="ERMount"/>
+        <result property="ETemp" column="ETemp"/>
+        <result property="EPlan" column="EPlan"/>
+        <result property="EIsRun" column="EIsRun"/>
+        <result property="EPType" column="EPType"/>
+        <result property="ECompany" column="ECompany"/>
+        <result property="endDate" column="endDate"/>
+        <result property="state" column="state"/>
+        <result property="processInstanceId" column="processInstanceId"/>
+        <association property="user" column="EApplicant" select="com.java.activiti.dao.UserDao.findById"/>
+    </resultMap>
+    <select id="equitPage" parameterType="Map" resultMap="EquitResult">
+        select * from t_equit
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and EApplicant = #{userId}
+            </if>
+        </where>
+        order by ApplicantData desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+    <select id="equitCount" parameterType="Map" resultType="int">
+        select count(1) from t_equit
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and EApplicant = #{userId}
+            </if>
+        </where>
+    </select>
+    <insert id="addEquit" parameterType="com.java.activiti.model.Equit">
+        insert into t_equit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="EID!= null">
+                EID,
+            </if>
+            <if test="ApplicantData!=null ">
+                ApplicantData,
+            </if>
+            <if test="EType!=null">
+                EType,
+            </if>
+            <if test="NID != null">
+                NID,
+            </if>
+            <if test="EPName != null">
+                EPName,
+            </if>
+            <if test="EProjectName != null">
+                EProjectName,
+            </if>
+            <if test="ESubName != null">
+                ESubName,
+            </if>
+            <if test="ESysName != null">
+                ESysName,
+            </if>
+            <if test="ECode != null">
+                ECode,
+            </if>
+            <if test="EProduct != null">
+                EProduct,
+            </if>
+            <if test="ESpecs != null">
+                ESpecs,
+            </if>
+            <if test="EUnit != null">
+                EUnit,
+            </if>
+            <if test="EMount != null">
+                EMount,
+            </if>
+            <if test="ENote != null">
+                ENote,
+            </if>
+            <if test="ERMount != null">
+                ERMount,
+            </if>
+            <if test="user!=null and user.id != null">
+                EApplicant,
+            </if>
+            <if test="ETemp != null">
+                ETemp,
+            </if>
+            <if test="EPlan != null">
+                EPlan,
+            </if>
+            <if test="EIsRun != null">
+                EIsRun,
+            </if>
+            <if test="EPType != null">
+                EPType,
+            </if>
+            <if test="ECompany != null">
+                ECompany,
+            </if>
+            <if test="endDate != null">
+                endDate,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="processInstanceId != null">
+                processInstanceId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="EID != null">
+                #{EID,jdbcType=VARCHAR},
+            </if>
+            <if test="ApplicantData != null">
+                #{ApplicantData,jdbcType=TIMESTAMP},
+            </if>
+            <if test="EType != null">
+                #{EType,jdbcType=VARCHAR},
+            </if>
+            <if test="NID != null">
+                #{NID,jdbcType=VARCHAR},
+            </if>
+            <if test="EPName != null">
+                #{EPName,jdbcType=VARCHAR},
+            </if>
+            <if test="EProjectName != null">
+                #{EProjectName,jdbcType=VARCHAR},
+            </if>
+            <if test="ESubName != null">
+                #{ESubName,jdbcType=VARCHAR},
+            </if>
+            <if test="ESysName != null">
+                #{ESysName,jdbcType=VARCHAR},
+            </if>
+            <if test="ECode != null">
+                #{ECode,jdbcType=VARCHAR},
+            </if>
+            <if test="EProduct != null">
+                #{EProduct,jdbcType=VARCHAR},
+            </if>
+            <if test="ESpecs != null">
+                #{ESpecs,jdbcType=VARCHAR},
+            </if>
+            <if test="EUnit != null">
+                #{EUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="EMount != null">
+                #{EMount,jdbcType=VARCHAR},
+            </if>
+            <if test="ENote != null">
+                #{ENote,jdbcType=VARCHAR},
+            </if>
+            <if test="ERMount != null">
+                #{ERMount,jdbcType=VARCHAR},
+            </if>
+            <if test="user!=null and user.id != null">
+                #{user.id,jdbcType=VARCHAR},
+            </if>
+
+            <if test="ETemp != null">
+                #{ETemp,jdbcType=VARCHAR},
+            </if>
+            <if test="EPlan != null">
+                #{EPlan,jdbcType=VARCHAR},
+            </if>
+
+            <if test="EIsRun != null">
+                #{EIsRun,jdbcType=VARCHAR},
+            </if>
+            <if test="EPType != null">
+                #{EPType,jdbcType=VARCHAR},
+            </if>
+            <if test="ECompany != null">
+                #{ECompany,jdbcType=VARCHAR},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="processInstanceId != null">
+                #{processInstanceId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="EquitResult">
+        SELECT * FROM t_equit where id =#{id};
+    </select>
+    <update id="updateEquit" parameterType="com.java.activiti.model.Equit">
+        update t_equit
+        <set>
+            <if test="endDate!=null">
+                endDate=#{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getEquitByTaskId" parameterType="String" resultMap="EquitResult">
+		select * from t_equit
+		where processInstanceId=#{processInstanceId}
+	</select>
+
+    <!--    <select id="selectTaskByProcessID" resultType="com.java.activiti.model.MyTask">-->
+    <!--        select id as taskID,processInstanceId as processID-->
+    <!--        from t_equit_back where processInstanceId in-->
+    <!--        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">-->
+    <!--            #{item}-->
+    <!--        </foreach>-->
+    <!--    </select>-->
+</mapper> 

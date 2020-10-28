@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.FileDao">
+    <resultMap type="com.java.activiti.model.Repair" id="repair">
+        <result property="id" column="id"/>
+        <result property="repairDate" column="repairDate"/>
+        <result property="repairPlace" column="repairPlace"/>
+        <result property="repairLevel" column="repairLevel"/>
+        <result property="repairType" column="repairType"/>
+        <result property="repairContext" column="repairContext"/>
+        <result property="repairImageID" column="repairImageID"/>
+        <result property="repairFileID" column="repairFileID"/>
+        <result property="repairDate" column="repairDate"/>
+        <result property="status" column="status"/>
+        <result property="processInstanceId" column="processInstanceId"/>
+    </resultMap>
+    <resultMap type="com.java.activiti.model.File" id="files">
+        <result property="fileID" column="id"/>
+        <result property="repairID" column="repair_id"/>
+        <result property="Path" column="path"/>
+        <result property="remark" column="remark"/>
+        <result property="is_deleted" column="is_deleted"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+    <resultMap type="com.java.activiti.model.Images" id="images">
+        <result property="imagesID" column="id"/>
+        <result property="repairID" column="repair_id"/>
+        <result property="Path" column="path"/>
+        <result property="remark" column="remark"/>
+        <result property="is_deleted" column="is_deleted"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+
+    <insert id="addFiles" parameterType="com.java.activiti.model.File">
+		insert into act_id_file values(#{fileID},#{repairID},#{Path},#{remark},#{is_deleted},#{create_time})
+	</insert>
+
+    <insert id="addImages" parameterType="com.java.activiti.model.Images">
+		insert into act_id_images values(#{imagesID},#{repairID},#{Path},#{remark},#{is_deleted},#{create_time});
+	</insert>
+
+    <select id="findFilesByRepairID" parameterType="String" resultMap="files">
+		select * from act_id_file where repair_id=#{repairFileID}
+	</select>
+
+    <select id="findImageByRepairID" parameterType="String" resultMap="images">
+		select * from act_id_images where repair_id=#{repairFileID}
+	</select>
+
+    <select id="selectFileList" parameterType="java.util.List" resultMap="files">
+        select * from act_id_file where repair_id in
+        <foreach collection="list" item="repairFileID" index="index" open="(" separator="," close=")">
+            #{repairFileID}
+        </foreach>
+    </select>
+
+    <select id="selectImageList" parameterType="java.util.List" resultMap="images">
+        select * from act_id_images where repair_id in
+        <foreach collection="list" item="repairFileID" index="index" open="(" separator="," close=")">
+            #{repairFileID}
+        </foreach>
+    </select>
+
+    <delete id="deleteImagebyID" parameterType="String">
+	delete from act_id_images where id = #{id}
+    </delete>
+
+    <delete id="deleteFilebyID" parameterType="String">
+	delete from act_id_file where id = #{id}
+    </delete>
+
+
+    <delete id="deleteListFile" parameterType="java.util.List">
+    delete from act_id_file where repair_id in
+    <foreach collection="list" item="repairFileID" index="index" open="(" separator="," close=")">
+        #{repairFileID}
+    </foreach>
+</delete>
+
+    <delete id="deleteListImage" parameterType="java.util.List">
+        delete from act_id_images where repair_id in
+        <foreach collection="list" item="repairFileID" index="index" open="(" separator="," close=")">
+            #{repairFileID}
+        </foreach>
+    </delete>
+
+</mapper>

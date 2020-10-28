@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.CheckoutDao">
+    <resultMap type="com.java.activiti.model.erp.Checkout" id="CheckoutResult">
+        <id property="checkoutId" column="checkoutId"/>
+        <result property="checkoutDate" column="checkoutDate"/>
+        <result property="SUPPLIER_ID" column="SUPPLIER_ID"/>
+        <result property="checkoutMount" column="checkoutMount"/>
+        <result property="checkoutNotQuaMount" column="checkoutNotQuaMount"/>
+        <result property="checkoutType" column="checkoutType"/>
+        <result property="checkoutMaterial" column="checkoutMaterial"/>
+        <result property="checkoutPerson" column="checkoutPerson"/>
+        <result property="checkoutStatus" column="checkoutStatus"/>
+        <result property="checkoutDataStatus" column="checkoutDataStatus"/>
+        <result property="checkoutLabelStatus" column="checkoutLabelStatus"/>
+        <result property="checkoutNum" column="checkoutNum"/>
+        <result property="checkoutFlag" column="checkoutFlag"/>
+        <result property="checkoutNotQuaId" column="checkoutNotQuaId"/>
+        <association property="supplier" column="SUPPLIER_ID" select="com.java.activiti.dao.erp.SupplierDao.findById"/>
+        <association property="notQualified" column="checkoutNotQuaId" select="com.java.activiti.dao.erp.NotQualifiedDao.findById"/>
+        <association property="user" column="purchaseGoodsPerson" select="com.java.activiti.dao.UserDao.findById"/>
+    </resultMap>
+
+    <select id="checkoutPage" parameterType="Map" resultMap="CheckoutResult">
+        select * from erp_checkout
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and checkoutPerson = #{userId}
+            </if>
+        </where>
+        order by checkoutDate desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="checkoutCount" parameterType="Map" resultType="int">
+        select count(1) from erp_checkout
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and checkoutPerson = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addCheckout" parameterType="com.java.activiti.model.erp.Checkout">
+        insert into erp_checkout
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkoutId!= null">
+                checkoutId,
+            </if>
+            <if test="checkoutDate!= null">
+                checkoutDate,
+            </if>
+            <if test="SUPPLIER_ID!=null ">
+                SUPPLIER_ID,
+            </if>
+            <if test="checkoutMount!=null">
+                checkoutMount,
+            </if>
+            <if test="checkoutNotQuaMount!=null">
+                checkoutNotQuaMount,
+            </if>
+            <if test="checkoutType!=null">
+                checkoutType,
+            </if>
+            <if test="checkoutMaterial!=null">
+                checkoutMaterial,
+            </if>
+            <if test="checkoutPerson!=null">
+                checkoutPerson,
+            </if>
+            <if test="checkoutStatus!=null">
+                checkoutStatus,
+            </if>
+            <if test="checkoutDataStatus != null">
+                checkoutDataStatus,
+            </if>
+            <if test="checkoutLabelStatus!=null">
+                checkoutLabelStatus,
+            </if>
+            <if test="checkoutNum!=null">
+                checkoutNum,
+            </if>
+            <if test="checkoutFlag!=null">
+                checkoutFlag,
+            </if>
+            <if test="checkoutNotQuaId!=null">
+                checkoutNotQuaId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkoutId != null">
+                #{checkoutId,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutDate != null">
+                #{checkoutDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="SUPPLIER_ID != null">
+                #{SUPPLIER_ID,jdbcType=INTEGER},
+            </if>
+            <if test="checkoutMount != null">
+                #{checkoutMount,jdbcType=INTEGER},
+            </if>
+            <if test="checkoutNotQuaMount != null">
+                #{checkoutNotQuaMount,jdbcType=INTEGER},
+            </if>
+            <if test="checkoutType != null">
+                #{checkoutType,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutMaterial != null">
+                #{checkoutMaterial,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutPerson != null">
+                #{checkoutPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutStatus != null">
+                #{checkoutStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutDataStatus != null">
+                #{checkoutDataStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutLabelStatus != null">
+                #{checkoutLabelStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="checkoutNum != null">
+                #{checkoutNum,jdbcType=INTEGER},
+            </if>
+            <if test="checkoutFlag != null">
+                #{checkoutFlag,jdbcType=INTEGER},
+            </if>
+            <if test="checkoutNotQuaId != null">
+                #{checkoutNotQuaId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="CheckoutResult">
+        SELECT * FROM erp_checkout where checkoutId =#{checkoutId};
+    </select>
+
+    <update id="updateCheckout" parameterType="com.java.activiti.model.erp.Checkout">
+        update erp_checkout
+        <set>
+            <if test="checkoutDate!=null">
+                checkoutDate=#{checkoutDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="SUPPLIER_ID!=null">
+                SUPPLIER_ID=#{SUPPLIER_ID},
+            </if>
+            <if test="checkoutMount!=null">
+                checkoutMount=#{checkoutMount},
+            </if>
+            <if test="checkoutNotQuaMount!=null">
+                checkoutNotQuaMount=#{checkoutNotQuaMount},
+            </if>
+            <if test="checkoutType!=null">
+                checkoutType=#{checkoutType},
+            </if>
+            <if test="checkoutMaterial!=null">
+                checkoutMaterial=#{checkoutMaterial},
+            </if>
+            <if test="checkoutPerson!=null">
+                checkoutPerson=#{checkoutPerson},
+            </if>
+            <if test="checkoutStatus!=null">
+                checkoutStatus=#{checkoutStatus},
+            </if>
+            <if test="checkoutDataStatus!=null">
+                checkoutDataStatus=#{checkoutDataStatus},
+            </if>
+            <if test="checkoutLabelStatus!=null">
+                checkoutLabelStatus=#{checkoutLabelStatus},
+            </if>
+            <if test="checkoutNum!=null">
+                checkoutNum=#{checkoutNum},
+            </if>
+            <if test="checkoutFlag!=null">
+                checkoutFlag=#{checkoutFlag},
+            </if>
+            <if test="checkoutNotQuaId!=null">
+                checkoutNotQuaId=#{checkoutNotQuaId},
+            </if>
+        </set>
+        where checkoutId=#{checkoutId}
+    </update>
+</mapper> 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.wms.WmsrecordoutDao">
+    <resultMap id="wmsrecordout" type="com.java.activiti.model.wms.Wmsrecordout">
+        <id property="outId" column="outId"/>
+        <result property="outOdd" column="outOdd"/>
+        <result property="userId" column="userId"/>
+        <result property="goodId" column="goodId"/>
+        <result property="outAmount" column="outAmount"/>
+        <result property="outRemark" column="outRemark"/>
+        <result property="inRespositoryId" column="inRespositoryId"/>
+        <result property="outRespositoryId" column="outRespositoryId"/>
+        <result property="outDate" column="outDate"/>
+        <result property="outInfo" column="outInfo"/>
+        <result property="outTypeId" column="outTypeId"/>
+        <result property="projectId" column="projectId"/>
+        <result property="subProId" column="subProId"/>
+        <result property="approveId" column="approveId"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="goods" column="goodId" select="com.java.activiti.dao.wms.WmsGoodDao.findById"/>
+        <association property="inWarehouse" column="inRespositoryId" select="com.java.activiti.dao.wms.WarehouseDao.findById"/>
+        <association property="outWarehouse" column="outRespositoryId" select="com.java.activiti.dao.wms.WarehouseDao.findById"/>
+        <association property="outType" column="outTypeId" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="project" column="projectId" select="com.java.activiti.dao.ProjectDao.findById"/>
+        <association property="subPro" column="subProId" select="com.java.activiti.dao.MyTypeDao.findById"/>
+    </resultMap>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="wmsrecordout">
+		select * from wms_record_out where outId=#{inId}
+	</select>
+
+    <select id="wmsrecordoutPage" parameterType="Map" resultMap="wmsrecordout">
+        select * from wms_record_out
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and outDate between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="wmsrecordoutCount" parameterType="Map" resultType="int">
+        select count(1) from wms_record_out
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and outDate between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <insert id="addWmsrecordout" parameterType="com.java.activiti.model.wms.Wmsrecordout">
+        insert into wms_record_out
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outId != null">
+                outId,
+            </if>
+            <if test="outOdd != null">
+                outOdd,
+            </if>
+            <if test="projectId != null">
+                projectId,
+            </if>
+            <if test="goodId != null">
+                goodId,
+            </if>
+            <if test="userId != null">
+                userId,
+            </if>
+            <if test="outAmount != null">
+                outAmount,
+            </if>
+            <if test="outRemark != null">
+                outRemark,
+            </if>
+            <if test="inRespositoryId != null">
+                inRespositoryId,
+            </if>
+            <if test="outRespositoryId != null">
+                outRespositoryId,
+            </if>
+            <if test="outDate != null">
+                outDate,
+            </if>
+            <if test="outInfo != null">
+                outInfo,
+            </if>
+            <if test="outTypeId != null">
+                outTypeId,
+            </if>
+            <if test="subProId != null">
+                subProId,
+            </if>
+            <if test="approveId != null">
+                approveId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outId != null">
+                #{outId,jdbcType=BIGINT},
+            </if>
+            <if test="outOdd != null">
+                #{outOdd,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null">
+                #{projectId,jdbcType=BIGINT},
+            </if>
+            <if test="goodId != null">
+                #{goodId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="outAmount != null">
+                #{outAmount,jdbcType=DOUBLE},
+            </if>
+            <if test="outRemark != null">
+                #{outRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="inRespositoryId != null">
+                #{inRespositoryId,jdbcType=BIGINT},
+            </if>
+            <if test="outRespositoryId != null">
+                #{outRespositoryId,jdbcType=BIGINT},
+            </if>
+            <if test="outDate != null">
+                #{outDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="outInfo != null">
+                #{outInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="outTypeId != null">
+                #{outTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="subProId != null">
+                #{subProId,jdbcType=BIGINT},
+            </if>
+            <if test="approveId != null">
+                #{approveId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWmsrecordout" parameterType="com.java.activiti.model.wms.Wmsrecordout">
+        update wms_record_out
+        <set>
+            <if test="outOdd!=null and outOdd!='' ">
+                outOdd=#{outOdd},
+            </if>
+            <if test="projectId!=null and projectId!='' ">
+                projectId=#{projectId},
+            </if>
+            <if test="goodId!=null and goodId!='' ">
+                goodId=#{goodId},
+            </if>
+            <if test="userId!=null and userId!='' ">
+                userId=#{userId},
+            </if>
+            <if test="outAmount!=null and outAmount!='' ">
+                outAmount=#{outAmount},
+            </if>
+            <if test="outRemark!=null and outRemark!='' ">
+                outRemark=#{outRemark},
+            </if>
+            <if test="inRespositoryId!=null and inRespositoryId!='' ">
+                inRespositoryId=#{inRespositoryId},
+            </if>
+            <if test="outRespositoryId!=null and outRespositoryId!='' ">
+                outRespositoryId=#{outRespositoryId},
+            </if>
+            <if test="outDate!=null and outDate!='' ">
+                outDate=#{outDate},
+            </if>
+            <if test="outInfo!=null and outInfo!='' ">
+                outInfo=#{outInfo},
+            </if>
+            <if test="outTypeId!=null and outTypeId!='' ">
+                outTypeId=#{outTypeId},
+            </if>
+            <if test="subProId!=null and subProId!='' ">
+                subProId=#{subProId},
+            </if>
+            <if test="approveId!=null and approveId!='' ">
+                approveId=#{approveId},
+            </if>
+        </set>
+        where outId=#{outId}
+    </update>
+
+    <delete id="deleteWmsrecordoutById" parameterType="java.util.List">
+        delete from wms_record_out where outId in
+        <foreach collection="list" item="outId" index="index" open="(" separator="," close=")">
+            #{outId}
+        </foreach>
+    </delete>
+
+</mapper>

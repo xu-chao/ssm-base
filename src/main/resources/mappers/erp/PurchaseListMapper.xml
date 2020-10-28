@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.PurchaseListDao">
+    <resultMap type="com.java.activiti.model.erp.PurchaseList" id="PurchaseListResult">
+        <id property="purchaseListId" column="purchaseListId"/>
+        <collection property="purchase" column="purchaseId"
+                    ofType="com.java.activiti.model.erp.Purchase">
+            <result property="purchaseId" column="purchaseId"/>
+            <result property="purchaseDate" column="purchaseDate"/>
+            <result property="SUPPLIER_ID" column="SUPPLIER_ID"/>
+            <result property="purchasedId" column="purchasedId"/>
+            <result property="purchaseMount" column="purchaseMount"/>
+            <result property="purchasePerson" column="purchasePerson"/>
+            <result property="purchaseGoodsPerson" column="purchaseGoodsPerson"/>
+            <result property="REPO_ID" column="REPO_ID"/>
+            <result property="purchaseNum" column="purchaseNum"/>
+            <result property="purchaseLeave" column="purchaseLeave"/>
+            <result property="purchaseFlag" column="purchaseFlag"/>
+            <association property="supplier" column="SUPPLIER_ID" select="com.java.activiti.dao.erp.SupplierDao.findById"/>
+            <association property="respository" column="REPO_ID" select="com.java.activiti.dao.erp.RespositoryDao.findById"/>
+            <association property="user" column="purchaseGoodsPerson" select="com.java.activiti.dao.UserDao.findById"/>
+        </collection>
+    </resultMap>
+
+    <select id="purchaseListPage" parameterType="Map" resultMap="PurchaseListResult">
+        select * from erp_purchase_list
+        <where>
+            <if test="purchaseId!=null and purchaseId!='' ">
+                and purchaseId = #{purchaseId}
+            </if>
+        </where>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="purchaseListCount" parameterType="Map" resultType="int">
+        select count(1) from erp_purchase_list
+        <where>
+            <if test="purchaseId!=null and purchaseId!='' ">
+                and purchaseId = #{purchaseId}
+            </if>
+        </where>
+    </select>
+
+    <select id="purchaseMountSum" parameterType="Map" resultType="int">
+        select SUM(epl.purchaseMount) as purchaseMount from erp_purchase_list epl
+        <where>
+            <if test="purchaseId!=null and purchaseId!='' ">
+                and epl.purchaseId = #{purchaseId}
+            </if>
+        </where>
+    </select>
+</mapper> 

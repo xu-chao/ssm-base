@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.UserDao">
+    <resultMap type="com.java.activiti.model.UserInfo" id="UserResult">
+        <result property="id" column="ID_"/>
+        <result property="firstName" column="FIRST_"/>
+        <result property="lastName" column="LAST_"/>
+        <result property="email" column="EMAIL_"/>
+        <result property="allName" column="ALLNAME_"/>
+        <result property="phone" column="PHONE_"/>
+        <result property="password" column="PWD_"/>
+        <result property="pictureID" column="PICTURE_ID_"/>
+        <result property="position" column="POSITION_"/>
+        <result property="certificate" column="CERTIFICATE_"/>
+        <result property="createTime" column="CREATE_TIME_"/>
+        <result property="lastLoginTime" column="LAST_LOGIN_TIME_"/>
+        <result property="status" column="STATUS_"/>
+
+        <result property="deptID" column="deptID"/>
+        <result property="parkID" column="parkID"/>
+        <association property="userDept" column="deptID" select="com.java.activiti.dao.DeptDao.selectDeptById"/>
+        <association property="userPark" column="parkID" select="com.java.activiti.dao.ParkDao.findById"/>
+    </resultMap>
+
+    <select id="findById" parameterType="String" resultMap="UserResult">
+		select * from act_id_user where id_=#{id}
+	</select>
+
+    <select id="findUser" parameterType="String" resultMap="UserResult">
+		select u.* from act_id_user as u left join act_id_membership as m on u.ID_ = m.USER_ID_
+		where m.GROUP_ID_ = "yunwei"
+	</select>
+
+    <select id="findoperationalManagersList" parameterType="String" resultMap="UserResult">
+		select u.* from act_id_user as u left join act_id_membership as m on u.ID_ = m.USER_ID_
+		where m.GROUP_ID_ = "OperationalManagers"
+	</select>
+
+    <select id="findProjectSupervisorList" parameterType="String" resultMap="UserResult">
+		select u.* from act_id_user as u left join act_id_membership as m on u.ID_ = m.USER_ID_
+		where m.GROUP_ID_ = "ProjectSupervisor"
+	</select>
+
+    <select id="findMaintainerList" parameterType="String" resultMap="UserResult">
+		select u.* from act_id_user as u left join act_id_membership as m on u.ID_ = m.USER_ID_
+		where m.GROUP_ID_ = "Maintainer"
+	</select>
+
+    <select id="userPage" parameterType="Map" resultMap="UserResult">
+        <if test="deptPid!=null and deptPid!='' ">
+            SELECT * from (
+            select u.*,d.*,park.* from act_id_user u
+            LEFT JOIN act_id_userdept ud on u.ID_ = ud.userID
+            LEFT JOIN act_id_dept d
+            ON ud.deptID = d.deptID
+            LEFT JOIN act_id_user_park upa on u.ID_ = upa.userID
+            LEFT JOIN t_park park on upa.ParkID = park.ParkID
+            where ud.userID is null
+            union
+        </if>
+        select u.*,d.*,park.* from act_id_user u
+
+        LEFT JOIN act_id_userdept ud ON u.ID_ = ud.userID
+            LEFT JOIN act_id_dept d ON ud.deptID = d.deptID
+            LEFT JOIN act_id_user_park upa on u.ID_ = upa.userID
+            LEFT JOIN t_park park on upa.ParkID = park.ParkID
+
+        <if test="deptID!=null and deptID!='' ">
+            LEFT JOIN act_id_membership ug on  u.ID_ = ug.USER_ID_
+            LEFT JOIN act_id_group g  on ug.GROUP_ID_ = g.ID_
+        </if>
+        <where>
+            <if test="deptPid==null or deptPid=='' ">
+                <if test="id!=null and id!='' ">
+                     u.ID_ like #{id}
+                </if>
+            </if>
+            <if test="deptPid!=null and deptPid!='' ">
+                and u.ID_ = ud.userID and ud.deptID = d.deptID and d.pid = #{deptPid}
+            </if>
+            <if test="deptID!=null and deptID!='' ">
+                and u.ID_ = ud.userID and ud.deptID = d.deptID and d.deptID = #{deptID}
+            </if>
+            <if test="groupID!=null and groupID!='' ">
+                and u.ID_ = ug.USER_ID_ and ug.GROUP_ID_ = g.ID_ and g.ID_ = #{groupID}
+            </if>
+        </where>
+        <if test="deptPid!=null and deptPid!='' ">
+            ) a
+            <if test="id!=null and id!='' ">
+                where  a.ID_ like #{id}
+            </if>
+        </if>
+
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="userCount" parameterType="Map" resultType="int">
+        <if test="deptPid!=null and deptPid!='' ">
+        SELECT COUNT(DISTINCT u.ID_) from ( select u.ID_ from act_id_user u left join act_id_userdept ud on
+        u.ID_ = ud.userID where ud.userID is null
+        union all
+            select u.ID_ from act_id_user u
+        </if>
+        <if test="deptPid==null or deptPid=='' ">
+            select count(1) from act_id_user u
+        </if>
+        <if test="deptPid!=null and deptPid!='' or deptID!=null and deptID!=''">
+            LEFT JOIN act_id_userdept ud ON u.ID_ = ud.userID
+            LEFT JOIN act_id_dept d ON ud.deptID = d.deptID
+        </if>
+        <if test="deptID!=null and deptID!='' ">
+            LEFT JOIN act_id_membership ug on  u.ID_ = ug.USER_ID_
+            LEFT JOIN act_id_group g  on ug.GROUP_ID_ = g.ID_
+        </if>
+        <where>
+            <if test="deptPid!=null and deptPid!='' ">
+                and u.ID_ = ud.userID and ud.deptID = d.deptID and d.pid = #{deptPid}
+            </if>
+            <if test="deptID!=null and deptID!='' ">
+                and u.ID_ = ud.userID and ud.deptID = d.deptID and d.deptID = #{deptID}
+            </if>
+            <if test="groupID!=null and groupID!='' ">
+                and u.ID_ = ug.USER_ID_ and ug.GROUP_ID_ = g.ID_ and g.ID_ = #{groupID}
+            </if>
+        </where>
+        <if test="deptPid!=null and deptPid!='' ">
+        ) u
+        </if>
+        <if test="id!=null and id!='' ">
+            where u.id_ like #{id}
+        </if>
+    </select>
+
+    <delete id="deleteUser" parameterType="java.util.List">
+        delete from act_id_user where id_ in
+        <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id" parameterType="User">
+        insert into act_id_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID_,
+            </if>
+            <if test="firstName != null">
+                FIRST_,
+            </if>
+            <if test="lastName != null">
+                LAST_,
+            </if>
+            <if test="allName != null">
+                ALLNAME_,
+            </if>
+            <if test="email != null">
+                EMAIL_,
+            </if>
+            <if test="phone != null">
+                PHONE_,
+            </if>
+            <if test="password != null">
+                PWD_,
+            </if>
+            <if test="pictureID != null">
+                PICTURE_ID_,
+            </if>
+            <if test="position != null">
+                POSITION_,
+            </if>
+            <if test="certificate != null">
+                CERTIFICATE_,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME_,
+            </if>
+            <if test="lastLoginTime != null">
+                LAST_LOGIN_TIME_,
+            </if>
+            <if test="status != null">
+                STATUS_,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="firstName != null">
+                #{firstName,jdbcType=VARCHAR},
+            </if>
+            <if test="lastName != null">
+                #{lastName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="allName != null">
+                #{allName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="pictureID != null">
+                #{pictureID,jdbcType=VARCHAR},
+            </if>
+            <if test="position != null">
+                #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="certificate != null">
+                #{certificate,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIGINT}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update act_id_user
+        <set>
+            <if test="firstName!=null and firstName!='' ">
+                first_=#{firstName},
+            </if>
+            <if test="lastName!=null and lastName!='' ">
+                last_=#{lastName},
+            </if>
+            <if test="allName!=null and allName!='' ">
+                ALLNAME_=#{allName},
+            </if>
+            <if test="email!=null and email!='' ">
+                EMAIL_=#{email},
+            </if>
+            <if test="phone!=null and phone!='' ">
+                PHONE_=#{phone},
+            </if>
+            <if test="password!=null and password!='' ">
+                pwd_=#{password},
+            </if>
+            <if test="pictureID!=null and pictureID!='' ">
+                PICTURE_ID_=#{pictureID},
+            </if>
+            <if test="position!=null and position!='' ">
+                POSITION_=#{position},
+            </if>
+            <if test="certificate!=null and certificate!='' ">
+                CERTIFICATE_=#{certificate},
+            </if>
+        </set>
+        where id_=#{id}
+    </update>
+
+    <update id="freezeUserById">
+		update act_id_user set
+		STATUS_=#{status}
+		where id_=#{id}
+	</update>
+
+    <update id="updateUserInfo" parameterType="user">
+        update act_id_user set
+
+
+        <if test="firstName!=null and firstName!='' ">
+            FIRST_=#{firstName},
+        </if>
+        <if test="lastName!=null and lastName!='' ">
+            LAST_=#{lastName},
+        </if>
+        <if test="email!=null and email!='' ">
+            EMAIL_=#{email},
+        </if>
+        <if test="phone!=null and phone!='' ">
+            PHONE_=#{phone}
+        </if>
+        where
+        ID_ = #{id}
+    </update>
+
+</mapper> 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.RCheckoutListDao">
+    <resultMap type="com.java.activiti.model.erp.RCheckoutList" id="RCheckoutListResult">
+        <id property="RCheckoutListId" column="RCheckoutListId"/>
+        <collection property="rCheckout" column="RCheckoutId"
+                    ofType="com.java.activiti.model.erp.RCheckout">
+            <result property="RCheckoutId" column="RCheckoutId"/>
+            <result property="RCheckoutDate" column="RCheckoutDate"/>
+            <result property="RCheckoutMount" column="RCheckoutMount"/>
+            <result property="RCheckoutNotQuaMount" column="RCheckoutNotQuaMount"/>
+            <result property="RCheckoutResult" column="RCheckoutResult"/>
+            <result property="RCheckoutDesc" column="RCheckoutDesc"/>
+            <result property="RCheckoutNum" column="RCheckoutNum"/>
+            <result property="RCheckoutFlag" column="RCheckoutFlag"/>
+        </collection>
+    </resultMap>
+
+    <select id="rCheckoutListPage" parameterType="Map" resultMap="RCheckoutListResult">
+        select * from erp_record_checkout_list
+        <where>
+            <if test="RCheckoutId!=null and RCheckoutId!='' ">
+                and RCheckoutId = #{RCheckoutId}
+            </if>
+        </where>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="rCheckoutListCount" parameterType="Map" resultType="int">
+        select count(1) from erp_record_checkout_list
+        <where>
+            <if test="RCheckoutId!=null and RCheckoutId!='' ">
+                and RCheckoutId = #{RCheckoutId}
+            </if>
+        </where>
+    </select>
+</mapper> 

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.GoodsDao">
+    <resultMap id="goods" type="com.java.activiti.model.Goods">
+        <id property="goodsId" column="goodsId"/>
+        <result property="goodsName" column="goodsName"/>
+        <result property="goodsSysName" column="goodsSysName"/>
+        <result property="goodsType" column="goodsType"/>
+        <result property="goodsCode" column="goodsCode"/>
+        <result property="goodsUnit" column="goodsUnit"/>
+        <result property="goodsSize" column="goodsSize"/>
+        <result property="goodsFunction" column="goodsFunction"/>
+        <result property="goodsMessage" column="goodsMessage"/>
+        <result property="goodsElse" column="goodsElse"/>
+        <result property="goodsValue" column="goodsValue"/>
+        <result property="goodsLink" column="goodsLink"/>
+    </resultMap>
+
+    <resultMap id="viewGoodsTypeResult" type="java.lang.String" >
+        <result column="goodsType" property="goodsType" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="goods">
+		select * from erp_goods where goodsId=#{goodsId}
+	</select>
+
+    <select id="goodsPage" parameterType="Map" resultMap="goods">
+        select * from erp_goods
+        <where>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName like concat('%',#{goodsName},'%')
+            </if>
+            <if test="goodsType!=null and goodsType!='' ">
+                and goodsType = #{goodsType}
+            </if>
+            <if test="goodsSysName!=null and goodsSysName!='' ">
+                and goodsSysName = #{goodsSysName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode like concat('%',#{goodsCode},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="goodsCount" parameterType="Map" resultType="int">
+        select count(1) from erp_goods
+        <where>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName like concat('%',#{goodsName},'%')
+            </if>
+            <if test="goodsType!=null and goodsType!='' ">
+                and goodsType = #{goodsType}
+            </if>
+            <if test="goodsSysName!=null and goodsSysName!='' ">
+                and goodsSysName = #{goodsSysName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode like concat('%',#{goodsCode},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectGoodsNameLike"
+            parameterType="java.lang.String" resultMap="goods">
+		select vegg.goodsName AS goodsName from view_erp_goods_goodsName vegg
+		where
+		vegg.goodsName like CONCAT('%',#{goodsName},'%')
+	</select>
+
+    <!-- 根据型号/图号 模糊查询型号/图号 自动补全 -->
+    <select id="selectGoodsCodeLike" parameterType="java.lang.String" resultMap="goods">
+	select vegg.goodsCode AS goodsCode from view_erp_goods_goodsCode vegg
+		where
+		vegg.goodsCode like CONCAT('%',#{goodsCode},'%')
+	</select>
+
+    <!-- 根据物料类型分类 -->
+    <select id="selectGoodsTypeLike"    parameterType="java.lang.String"  resultMap="goods">
+		select vegg.goodsType AS goodsType from view_erp_goods_goodsType vegg
+		where
+		vegg.goodsType like CONCAT('%',#{goodsType},'%')
+	</select>
+
+    <!-- 根据物料类型分类 -->
+    <select id="selectGoodsTypeAll" resultMap="viewGoodsTypeResult">
+		select vegg.goodsType AS goodsType from view_erp_goods_goodsType vegg
+	</select>
+
+    <insert id="addGoods" parameterType="goods">
+		insert into erp_goods
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="goodsId != null" >
+                goodsId,
+            </if>
+            <if test="goodsName != null" >
+                goodsName,
+            </if>
+            <if test="goodsSysName != null" >
+                goodsSysName,
+            </if>
+            <if test="goodsType != null" >
+                goodsType,
+            </if>
+            <if test="goodsCode != null" >
+                goodsCode,
+            </if>
+            <if test="goodsUnit != null" >
+                goodsUnit,
+            </if>
+            <if test="goodsSize != null" >
+                goodsSize,
+            </if>
+            <if test="goodsFunction != null" >
+                goodsFunction,
+            </if>
+            <if test="goodsMessage != null" >
+                goodsMessage,
+            </if>
+            <if test="goodsElse != null" >
+                goodsElse,
+            </if>
+            <if test="goodsValue != null" >
+                goodsValue,
+            </if>
+            <if test="goodsLink != null" >
+                goodsLink,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="goodsId != null" >
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null" >
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsSysName != null" >
+                #{goodsSysName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsType != null" >
+                #{goodsType,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsCode != null" >
+                #{goodsCode,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsUnit != null" >
+                #{goodsUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsSize != null" >
+                #{goodsSize,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsFunction != null" >
+                #{goodsFunction,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsMessage != null" >
+                #{goodsMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsElse != null" >
+                #{goodsElse,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsValue != null" >
+                #{goodsValue,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsLink != null" >
+                #{goodsLink,jdbcType=VARCHAR},
+            </if>
+        </trim>
+	</insert>
+
+    <update id="updateGoods" parameterType="goods">
+        update erp_goods
+        <set>
+            <if test="goodsName!=null and goodsName!='' ">
+                goodsName=#{goodsName},
+            </if>
+            <if test="goodsSysName!=null and goodsSysName!='' ">
+                goodsSysName=#{goodsSysName},
+            </if>
+            <if test="goodsType!=null and goodsType!='' ">
+                goodsType=#{goodsType},
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                goodsCode=#{goodsCode},
+            </if>
+            <if test="goodsUnit!=null and goodsUnit!='' ">
+                goodsUnit=#{goodsUnit},
+            </if>
+            <if test="goodsSize!=null and goodsSize!='' ">
+                goodsSize=#{goodsSize},
+            </if>
+            <if test="goodsFunction!=null and goodsFunction!='' ">
+                goodsFunction=#{goodsFunction},
+            </if>
+            <if test="goodsMessage!=null and goodsMessage!='' ">
+                goodsMessage=#{goodsMessage},
+            </if>
+            <if test="goodsElse!=null and goodsElse!='' ">
+                goodsElse=#{goodsElse},
+            </if>
+            <if test="goodsValue!=null and goodsValue!='' ">
+                goodsValue=#{goodsValue},
+            </if>
+            <if test="goodsLink!=null and goodsLink!='' ">
+                goodsLink=#{goodsLink},
+            </if>
+        </set>
+        where goodsId=#{goodsId}
+    </update>
+
+    <delete id="deleteGoodsById" parameterType="java.util.List">
+        delete from erp_goods where goodsId in
+        <foreach collection="list" item="goodsId" index="index" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findGoods" parameterType="goods" resultMap="goods">
+        select * from erp_goods
+        <where>
+            <if test="goodsId!=null and goodsId!='' ">
+                and goodsId = #{goodsId}
+            </if>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName = #{goodsName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode = #{goodsCode}
+            </if>
+            <if test="goodsUnit!=null and goodsUnit!='' ">
+                and goodsUnit = #{goodsUnit}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询goodsId对应的物料 -->
+    <select id="selectGoodsByGoodsID" parameterType="java.lang.Integer" resultType="goods">
+		select * from erp_goods
+		where goodsId = #{goodsId}
+	</select>
+
+    <!-- 查询所有的物料 -->
+    <select id="selectALL" resultType="goods">
+		select * from erp_goods
+	</select>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findGoodsByExcel" parameterType="goods" resultMap="goods">
+        select * from erp_goods
+        <where>
+            <if test="goodsId!=null and goodsId!='' ">
+                and goodsId = #{goodsId}
+            </if>
+            <if test="goodsName!=null and goodsName!='' ">
+                and goodsName = #{goodsName}
+            </if>
+            <if test="goodsCode!=null and goodsCode!='' ">
+                and goodsCode = #{goodsCode}
+            </if>
+            <if test="goodsUnit!=null and goodsUnit!='' ">
+                and goodsUnit = #{goodsUnit}
+            </if>
+        </where>
+        limit 1
+    </select>
+</mapper>

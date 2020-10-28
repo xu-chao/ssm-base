@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.java.activiti.dao.AccessRecordDao">
+    <resultMap id="accessRecord" type="com.java.activiti.model.AccessRecord">
+        <id column="RECORD_ID" property="record_ID"/>
+        <result column="USER_ID" property="user_ID"/>
+        <result column="USER_NAME" property="user_Name"/>
+        <result column="ACCESS_TYPE" property="access_Type"/>
+        <result column="ACCESS_TIME" property="access_Time"/>
+        <result column="ACCESS_IP" property="access_IP"/>
+    </resultMap>
+
+    <insert id="insertAccessRecord">
+        insert into t_access_record(USER_ID, USER_NAME, ACCESS_TYPE, ACCESS_TIME, ACCESS_IP)
+        values(#{user_ID}, #{user_Name}, #{access_Type}, #{access_Time}, #{access_IP})
+    </insert>
+
+    <select id="selectAccessRecords" resultMap="accessRecord">
+        select
+        RECORD_ID,
+        USER_ID,
+        USER_NAME,
+        ACCESS_TYPE,
+        ACCESS_TIME,
+        ACCESS_IP
+        from
+        t_access_record
+        <where>
+            <if test="userID != null">
+                USER_ID = #{userID}
+            </if>
+            <if test="accessType != 'all'">
+                and ACCESS_TYPE = #{accessType}
+            </if>
+            <if test="startDate != null">
+                and ACCESS_TIME >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and ACCESS_TIME <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="accessRecordPage" parameterType="Map" resultMap="accessRecord">
+        select * from t_access_record
+        <where>
+            <if test="userID!=null and userID!='' ">
+                and USER_ID = #{userID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and ACCESS_TIME between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="accessRecordCount" parameterType="Map" resultType="int">
+        select count(1) from t_access_record
+        <where>
+            <if test="userID!=null and userID!='' ">
+                and USER_ID = #{userID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and ACCESS_TIME between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+</mapper>

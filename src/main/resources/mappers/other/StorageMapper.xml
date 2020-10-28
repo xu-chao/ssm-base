@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.StorageDao">
+    <resultMap id="storage" type="com.java.activiti.model.Storage">
+        <id property="storageId" column="storageId"/>
+        <result property="mount" column="mount"/>
+        <result property="mountBack" column="mountBack"/>
+        <result property="mountIn" column="mountIn"/>
+        <result property="mountStorage" column="mountStorage"/>
+        <result property="mountQualified" column="mountQualified"/>
+        <result property="mountNotQualified" column="mountNotQualified"/>
+        <result property="ETemp" column="ETemp"/>
+        <result property="EPlan" column="EPlan"/>
+        <result property="EIsRun" column="EIsRun"/>
+    </resultMap>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="storage">
+		select * from erp_record_storage where storageId=#{storageId}
+	</select>
+
+    <select id="storagePage" parameterType="Map" resultMap="storage">
+        select * from erp_record_storage
+        <where>
+            <if test="storageId!=null">
+                and storageId = #{storageId}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="storageCount" parameterType="Map" resultType="int">
+        select count(1) from erp_record_storage
+        <where>
+            <if test="storageId!=null">
+                and storageId = #{storageId}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectStorageName"
+            parameterType="int" resultMap="storage">
+		select ers.storageId AS storageId, ers.mount AS mount from erp_record_storage ers
+		where
+		ers.storageId = #{storageId}
+	</select>
+
+    <insert id="addStorage" parameterType="storage">
+        insert into erp_record_storage
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="storageId != null" >
+                storageId,
+            </if>
+            <if test="mount != null" >
+                mount,
+            </if>
+            <if test="mountBack != null" >
+                mountBack,
+            </if>
+            <if test="mountIn != null" >
+                mountIn,
+            </if>
+            <if test="mountStorage != null">
+                mountStorage,
+            </if>
+            <if test="mountQualified != null" >
+                mountQualified,
+            </if>
+            <if test="mountNotQualified != null" >
+                mountNotQualified,
+            </if>
+            <if test="ETemp != null" >
+                ETemp,
+            </if>
+            <if test="EPlan != null" >
+                EPlan,
+            </if>
+            <if test="EIsRun != null" >
+                EIsRun,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="storageId != null" >
+                #{storageId,jdbcType=INTEGER},
+            </if>
+            <if test="mount != null" >
+                #{mount,jdbcType=INTEGER},
+            </if>
+            <if test="mountBack != null" >
+                #{mountBack,jdbcType=INTEGER},
+            </if>
+            <if test="mountIn != null" >
+                #{mountIn,jdbcType=INTEGER},
+            </if>
+            <if test="mountStorage != null" >
+                #{mountStorage,jdbcType=INTEGER},
+            </if>
+            <if test="mountQualified != null" >
+                #{mountQualified,jdbcType=INTEGER},
+            </if>
+            <if test="mountNotQualified != null" >
+                #{mountNotQualified,jdbcType=INTEGER},
+            </if>
+            <if test="ETemp != null" >
+                #{ETemp,jdbcType=INTEGER},
+            </if>
+            <if test="EPlan != null" >
+                #{EPlan,jdbcType=INTEGER},
+            </if>
+            <if test="EIsRun != null" >
+                #{EIsRun,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateStorage" parameterType="storage">
+        update erp_record_storage
+        <set>
+            <if test="storageId!=null">
+                storageId=#{storageId},
+            </if>
+            <if test="mount!=null">
+                mount=#{mount},
+            </if>
+            <if test="mountBack!=null">
+                mountBack=#{mountBack},
+            </if>
+            <if test="mountIn!=null">
+                mountIn=#{mountIn},
+            </if>
+            <if test="mountStorage!=null">
+                mountStorage=#{mountStorage},
+            </if>
+            <if test="mountQualified!=null">
+                mountQualified=#{mountQualified},
+            </if>
+            <if test="mountNotQualified!=null">
+                mountNotQualified=#{mountNotQualified},
+            </if>
+            <if test="ETemp!=null">
+                ETemp=#{ETemp},
+            </if>
+            <if test="EPlan!=null">
+                EPlan=#{EPlan},
+            </if>
+            <if test="EIsRun!=null">
+                EIsRun=#{EIsRun},
+            </if>
+        </set>
+        where storageId=#{storageId}
+    </update>
+
+    <delete id="deleteStorageById" parameterType="java.util.List">
+        delete from erp_record_storage where storageId in
+        <foreach collection="list" item="storageId" index="index" open="(" separator="," close=")">
+            #{storageId}
+        </foreach>
+    </delete>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findStorage" parameterType="storage" resultMap="storage">
+        select * from erp_record_storage
+        <where>
+            <if test="storageId!=null">
+                and storageId = #{storageId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询goodsId对应的物料 -->
+    <select id="selectStorageByStorageID" parameterType="java.lang.Integer" resultType="storage">
+		select * from erp_record_storage
+		where storageId = #{storageId}
+	</select>
+
+    <!-- 查询所有的物料 -->
+    <select id="selectALL" resultType="storage">
+		select * from erp_record_storage
+	</select>
+</mapper>

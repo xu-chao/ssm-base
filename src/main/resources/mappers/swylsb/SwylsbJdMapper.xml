@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.swylsb.SwylsbJdDao">
+    <resultMap id="SwylsbJd" type="com.java.activiti.model.swylsb.SwylsbJd">
+        <id property="ID" column="ID"/>
+        <result property="jdId" column="jdId"/>
+        <result property="azjcsjStartDate" column="azjcsjStartDate"/>
+        <result property="azjcsjEndDate" column="azjcsjEndDate"/>
+        <association property="azStatusType" column="azStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="tsStatusType" column="tsStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="xxfaStatusType" column="xxfaStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="tdztStatusType" column="tdztStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="cgztStatusType" column="cgztStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="shfaStatusType" column="shfaStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="ztjgscStatusType" column="ztjgscStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="zxscStatusType" column="zxscStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="dqscStatusType" column="dqscStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="ztjgdhStatusType" column="ztjgdhStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="zxdhStatusType" column="zxdhStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="dqdhStatusType" column="dqdhStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="zjganStatusType" column="zjganStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="zxazStatusType" column="zxazStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="dqazStatusType" column="dqazStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="sbtsStatusType" column="sbtsStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="xssy1StatusType" column="xssy1Status" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="gsjStatusType" column="gsjStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+        <association property="jgysStatusType" column="jgysStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+    </resultMap>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="SwylsbJd">
+        select * from sw_ylsb_jd
+        where ID = #{ID}
+    </select>
+
+    <insert id="updateSwylsbJd" parameterType="SwylsbJd">
+        REPLACE INTO sw_ylsb_jd
+        <set>
+            <if test="ID!=null">
+                ID=#{ID},
+            </if>
+            <if test="azStatus!=null ">
+                azStatus=#{azStatus},
+            </if>
+            <if test="tsStatus!=null ">
+                tsStatus=#{tsStatus},
+            </if>
+            <if test="xxfaStatus!=null ">
+                xxfaStatus=#{xxfaStatus},
+            </if>
+            <if test="tdztStatus!=null">
+                tdztStatus=#{tdztStatus},
+            </if>
+            <if test="cgztStatus!=null ">
+                cgztStatus=#{cgztStatus},
+            </if>
+            <if test="shfaStatus!=null ">
+                shfaStatus=#{shfaStatus},
+            </if>
+            <if test="ztjgscStatus!=null ">
+                ztjgscStatus=#{ztjgscStatus},
+            </if>
+            <if test="zxscStatus!=null ">
+                zxscStatus=#{zxscStatus},
+            </if>
+            <if test="dqscStatus!=null ">
+                dqscStatus =#{dqscStatus},
+            </if>
+            <if test="ztjgdhStatus!=null ">
+                ztjgdhStatus=#{ztjgdhStatus},
+            </if>
+            <if test="zxdhStatus!=null ">
+                zxdhStatus=#{zxdhStatus},
+            </if>
+            <if test="dqdhStatus!=null ">
+                dqdhStatus=#{dqdhStatus},
+            </if>
+            <if test="zjganStatus!=null ">
+                zjganStatus=#{zjganStatus},
+            </if>
+            <if test="zxazStatus!=null ">
+                zxazStatus=#{zxazStatus},
+            </if>
+            <if test="dqazStatus!=null ">
+                dqazStatus=#{dqazStatus},
+            </if>
+            <if test="sbtsStatus!=null ">
+                sbtsStatus=#{sbtsStatus},
+            </if>
+            <if test="xssy1Status!=null ">
+                xssy1Status=#{xssy1Status},
+            </if>
+            <if test="gsjStatus!=null ">
+                gsjStatus=#{gsjStatus},
+            </if>
+            <if test="jgysStatus!=null ">
+                jgysStatus=#{jgysStatus},
+            </if>
+            <if test="azjcsjStartDate!=null ">
+                azjcsjStartDate=#{azjcsjStartDate},
+            </if>
+              <if test="azjcsjEndDate!=null ">
+                azjcsjEndDate=#{azjcsjEndDate},
+            </if>
+            <if test="jdId!=null ">
+                jdId=#{jdId},
+            </if>
+        </set>
+    </insert>
+</mapper>

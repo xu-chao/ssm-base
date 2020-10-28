@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<beans xmlns="http://www.springframework.org/schema/beans"    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+        http://www.springframework.org/schema/mvc   http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+	<mvc:default-servlet-handler/>
+	<context:annotation-config/>
+    <!--<mvc:annotation-driven/>-->
+	<mvc:annotation-driven>
+		<!-- 配置StringHttpMessageConverter当@ResponseBody 时中文正常显示 -->
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 视图解析器 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"/>  
+	    <property name="maxUploadSize" value="10000000"/>
+	</bean>
+
+	<!-- 用户认证拦截器 防止直接登入到聊天室  这个要放在上面否则可以直接访问 chatroom.jsp-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/validate/**"/>
+			<mvc:exclude-mapping path="/static/**/**"/>
+			<mvc:exclude-mapping path="/errorPage/**"/>
+			<mvc:exclude-mapping path="/**/login*"/>
+			<bean class="com.java.activiti.web.interceptor.UserAuthInteceptor"/>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/ureport/**"/>
+			<bean class="com.java.activiti.ureport.interceptor.UReportAuthInteceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 用户认证拦截器 防止直接登入到表报  这个要放在上面否则可以直接访问 ureport/designer-->
+<!--	<mvc:interceptors>-->
+<!--		<mvc:interceptor>-->
+<!--			<mvc:mapping path="/ureport/**"/>-->
+<!--			<bean class="com.java.activiti.ureport.interceptor.UReportAuthInteceptor"/>-->
+<!--		</mvc:interceptor>-->
+<!--	</mvc:interceptors>-->
+
+	<bean class="com.java.activiti.config.SwaggerConfig" />
+
+	<!-- 启用@ControllerAdvice注解 -->
+	<bean
+			class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+	</bean>
+	<bean
+			class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+						class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+			</list>
+		</property>
+	</bean>
+
+    <!--<mvc:resources mapping="/api/**" location="/api" />-->
+
+	<!-- 使用注解的包，包括子集 -->
+    <!--<context:component-scan base-package="com.java.activiti.controller" />-->
+	<context:component-scan base-package="com.java.*.controller;com.java.*.*.controller;com.java.activiti.activiti;com.java.activiti.web.controller;com.java.activiti.quartz.init;"/>
+</beans>  

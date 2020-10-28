@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.UserDeptDao">
+    <resultMap type="com.java.activiti.model.UserDept" id="UserDeptResult">
+        <result property="userID" column="userID"/>
+        <result property="deptID" column="deptID"/>
+        <collection property="user" column="USER_ID_"
+                    ofType="com.java.activiti.model.User">
+            <result property="id" column="userID"/>
+            <result property="firstName" column="first_"/>
+            <result property="lastName" column="last_"/>
+            <result property="email" column="email_"/>
+            <result property="allName" column="ALLNAME_"/>
+            <result property="password" column="pwd_"/>
+            <result property="createTime" column="CREATE_TIME_"/>
+            <result property="lastLoginTime" column="LAST_LOGIN_TIME_"/>
+            <result property="status" column="STATUS_"/>
+        </collection>
+        <collection property="dept" column="deptID"
+                    ofType="com.java.activiti.model.Dept">
+            <result property="deptID" column="deptID"/>
+            <result property="deptName" column="deptName"/>
+            <result property="deptAddress" column="deptAddress"/>
+            <result property="deptMaster" column="deptMaster"/>
+            <result property="deptPhone" column="deptPhone"/>
+            <result property="deptFax" column="deptFax"/>
+            <result property="deptEmail" column="deptEmail"/>
+            <result property="deptRemarks" column="deptRemarks"/>
+            <result property="pid" column="pid"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="dept" type="com.java.activiti.model.Dept">
+        <id property="deptID" column="deptID"/>
+        <result property="deptName" column="deptName"/>
+        <result property="deptAddress" column="deptAddress"/>
+    </resultMap>
+
+    <insert id="addDeptAllocation">
+        replace INTO act_id_userdept (`deptID`, `userID`)
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="deptID != null">
+                #{deptID,jdbcType=VARCHAR},
+            </if>
+            <if test="deptID == null">
+                <if test="dept!=null and dept.deptID != null">
+                    #{dept.deptID,jdbcType=VARCHAR},
+                </if>
+            </if>
+            <if test="userID != null">
+                #{userID,jdbcType=BIGINT},
+            </if>
+            <if test="userID == null">
+                <if test="user!=null and user.id != null">
+                    #{user.id,jdbcType=VARCHAR},
+                </if>
+            </if>
+        </trim>
+    </insert>
+
+    <select id="sessionDept" parameterType="Map" resultMap="UserDeptResult">
+		select ud.userID,ud.deptID,
+		      d.deptID,d.deptID,d.deptName,d.deptAddress,d.deptMaster,d.deptPhone,d.deptFax,d.deptEmail,d.deptRemarks,d.pid,
+              u.ID_ as userID,u.FIRST_,u.LAST_,u.PWD_,u.EMAIL_,u.CREATE_TIME_,u.LAST_LOGIN_TIME_,u.STATUS_
+        from  act_id_user u,act_id_userdept ud,act_id_dept d
+        where u.ID_ = ud.userID and
+              ud.deptID = d.deptID and
+              u.PWD_ = #{password} and
+		      u.ID_ = #{userName}  and
+			  d.deptID = #{deptID}
+	</select>
+
+    <select id="selectUserDept" resultMap="dept">
+		select
+		d.deptID AS deptID,
+		d.deptName AS deptName,
+		d.deptAddress AS deptAddress
+		from
+		act_id_dept d, act_id_userdept ud
+		where
+		d.deptID = ud.deptID and
+		ud.userID = #{userID}
+	</select>
+    <delete id="deleteUserDept" parameterType="java.lang.String">
+		delete from act_id_userdept where deptID = #{deptID}
+		                        and userID = #{userID}
+	</delete>
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.NotQualifiedDao">
+    <resultMap type="com.java.activiti.model.erp.NotQualified" id="NotQualifiedResult">
+        <id property="NotQuaId" column="NotQuaId"/>
+        <result property="NotQuaLook" column="NotQuaLook"/>
+        <result property="NotQuaSize" column="NotQuaSize"/>
+        <result property="NotQuaYd" column="NotQuaYd"/>
+        <result property="NotQuaType" column="NotQuaType"/>
+        <result property="NotQuaXn" column="NotQuaXn"/>
+        <result property="NotQuaTs" column="NotQuaTs"/>
+        <result property="NotQuaZl" column="NotQuaZl"/>
+        <result property="NotQuaQt" column="NotQuaQt"/>
+        <result property="NotQuaDesc" column="NotQuaDesc"/>
+        <association property="rCheckout" column="RCheckoutId" select="com.java.activiti.dao.erp.RCheckoutDao.findById"/>
+    </resultMap>
+
+    <select id="notQualifiedPage" parameterType="Map" resultMap="NotQualifiedResult">
+        select * from erp_record_notqualified
+<!--        <where>-->
+<!--            <if test="userId!=null and userId!='' ">-->
+<!--                and NotQuaId = #{userId}-->
+<!--            </if>-->
+<!--        </where>-->
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="notQualifiedCount" parameterType="Map" resultType="int">
+        select count(1) from erp_record_notqualified
+<!--        <where>-->
+<!--            <if test="userId!=null and userId!='' ">-->
+<!--                and NotQuaId = #{userId}-->
+<!--            </if>-->
+<!--        </where>-->
+    </select>
+
+    <insert id="addNotQualified" parameterType="com.java.activiti.model.erp.NotQualified">
+        insert into erp_record_notqualified
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="NotQuaId!= null">
+                NotQuaId,
+            </if>
+            <if test="NotQuaLook!= null">
+                NotQuaLook,
+            </if>
+            <if test="NotQuaSize!=null ">
+                NotQuaSize,
+            </if>
+            <if test="NotQuaYd!=null">
+                NotQuaYd,
+            </if>
+            <if test="NotQuaType!=null">
+                NotQuaType,
+            </if>
+            <if test="NotQuaXn!=null">
+                NotQuaXn,
+            </if>
+            <if test="NotQuaTs!=null">
+                NotQuaTs,
+            </if>
+            <if test="NotQuaZl != null">
+                NotQuaZl,
+            </if>
+            <if test="NotQuaQt != null">
+                NotQuaQt,
+            </if>
+            <if test="NotQuaDesc != null">
+                NotQuaDesc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="NotQuaId != null">
+                #{NotQuaId,jdbcType=VARCHAR},
+            </if>
+            <if test="NotQuaLook != null">
+                #{NotQuaLook,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaSize != null">
+                #{NotQuaSize,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaYd != null">
+                #{NotQuaYd,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaType != null">
+                #{NotQuaType,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaXn != null">
+                #{NotQuaXn,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaTs != null">
+                #{NotQuaTs,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaZl != null">
+                #{NotQuaZl,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaQt != null">
+                #{NotQuaQt,jdbcType=INTEGER},
+            </if>
+            <if test="NotQuaDesc != null">
+                #{NotQuaDesc,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="NotQualifiedResult">
+        SELECT * FROM erp_record_notqualified where NotQuaId = #{NotQuaId};
+    </select>
+
+    <update id="updateNotQualified" parameterType="com.java.activiti.model.erp.NotQualified">
+        update erp_record_notqualified
+        <set>
+            <if test="NotQuaLook!=null">
+                NotQuaLook=#{NotQuaLook},
+            </if>
+            <if test="NotQuaSize!=null">
+                NotQuaSize=#{NotQuaSize},
+            </if>
+            <if test="NotQuaYd!=null">
+                NotQuaYd=#{NotQuaYd},
+            </if>
+            <if test="NotQuaType!=null">
+                NotQuaType=#{NotQuaType},
+            </if>
+            <if test="NotQuaXn!=null">
+                NotQuaXn=#{NotQuaXn},
+            </if>
+            <if test="NotQuaTs!=null">
+                NotQuaTs=#{NotQuaTs},
+            </if>
+            <if test="NotQuaZl!=null">
+                NotQuaZl=#{NotQuaZl},
+            </if>
+            <if test="NotQuaQt!=null">
+                NotQuaQt=#{NotQuaQt},
+            </if>
+            <if test="NotQuaDesc!=null">
+                NotQuaDesc=#{NotQuaDesc},
+            </if>
+        </set>
+        where NotQuaId=#{NotQuaId}
+    </update>
+</mapper> 

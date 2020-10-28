@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.wms.WmssupplierDao">
+    <resultMap id="wmssupplier" type="com.java.activiti.model.wms.Wmssupplier">
+        <id property="supplierId" column="supplierId"/>
+        <result property="supplierName" column="supplierName"/>
+        <result property="supplierTel" column="supplierTel"/>
+        <result property="supplierEmail" column="supplierEmail"/>
+        <result property="supplierAddress" column="supplierAddress"/>
+    </resultMap>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="wmssupplier">
+		select * from wms_supplier where supplierId=#{supplierId}
+	</select>
+
+    <select id="wmssupplierPage" parameterType="Map" resultMap="wmssupplier">
+        select * from wms_supplier
+        <where>
+            <if test="supplierName!=null and supplierName!='' ">
+                and supplierName like concat('%',#{supplierName},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="wmssupplierCount" parameterType="Map" resultType="int">
+        select count(1) from wms_supplier
+        <where>
+            <if test="supplierName!=null and supplierName!='' ">
+                and supplierName like concat('%',#{supplierName},'%')
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <insert id="addWmssupplier" parameterType="com.java.activiti.model.wms.Wmssupplier">
+        insert into wms_supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null">
+                supplierId,
+            </if>
+            <if test="supplierName != null">
+                supplierName,
+            </if>
+            <if test="supplierTel != null">
+                supplierTel,
+            </if>
+            <if test="supplierEmail != null">
+                supplierEmail,
+            </if>
+            <if test="supplierAddress != null">
+                supplierAddress,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierId != null">
+                #{supplierId,jdbcType=BIGINT},
+            </if>
+            <if test="supplierName != null">
+                #{supplierName,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierTel != null">
+                #{supplierTel,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierEmail != null">
+                #{supplierEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierAddress != null">
+                #{supplierAddress,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWmssupplier" parameterType="com.java.activiti.model.wms.Wmssupplier">
+        update wms_supplier
+        <set>
+            <if test="supplierName!=null and supplierName!='' ">
+                supplierName=#{supplierName},
+            </if>
+            <if test="supplierTel!=null and supplierTel!='' ">
+                supplierTel=#{supplierTel},
+            </if>
+            <if test="supplierEmail!=null and supplierEmail!='' ">
+                supplierEmail=#{supplierEmail},
+            </if>
+            <if test="supplierAddress!=null and supplierAddress!='' ">
+                supplierAddress=#{supplierAddress},
+            </if>
+        </set>
+        where supplierId=#{supplierId}
+    </update>
+
+    <delete id="deleteWmssupplierById" parameterType="java.util.List">
+        delete from wms_supplier where supplierId in
+        <foreach collection="list" item="supplierId" index="index" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </delete>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findWmssupplier" parameterType="com.java.activiti.model.wms.Wmssupplier" resultMap="wmssupplier">
+        select * from wms_supplier
+        <where>
+            <if test="supplierName!=null and supplierName!='' ">
+                and supplierName = #{supplierName}
+            </if>
+            <if test="supplierTel!=null and supplierTel!='' ">
+                and supplierTel = #{supplierTel}
+            </if>
+            <if test="supplierEmail!=null and supplierEmail!='' ">
+                and supplierEmail = #{supplierEmail}
+            </if>
+            <if test="supplierAddress!=null and supplierAddress!='' ">
+                and supplierAddress = #{supplierAddress}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findWmssupplierByExcel" parameterType="com.java.activiti.model.wms.Wmssupplier" resultMap="wmssupplier">
+        select * from wms_supplier
+        <where>
+            <if test="supplierName!=null and supplierName!='' ">
+                and supplierName = #{supplierName}
+            </if>
+            <if test="supplierTel!=null and supplierTel!='' ">
+                and supplierTel = #{supplierTel}
+            </if>
+            <if test="supplierEmail!=null and supplierEmail!='' ">
+                and supplierEmail = #{supplierEmail}
+            </if>
+            <if test="supplierAddress!=null and supplierAddress!='' ">
+                and supplierAddress = #{supplierAddress}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <!-- 自动补全 -->
+    <select id="selectSupplierNameLike"
+            parameterType="java.lang.String" resultMap="wmssupplier">
+		select vegg.supplierName AS supplierName from view_wms_supplier_supplierName vegg
+		where
+		vegg.supplierName like CONCAT('%',#{supplierName},'%')
+	</select>
+
+    <!-- 查询cityID对应的城市 -->
+    <select id="selectALL" resultType="wmssupplier">
+		select * from wms_supplier
+	</select>
+</mapper>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <!-- 会话Session ID生成器 -->
+    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+
+    <!-- 会话Cookie模板 -->
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <!--cookie的name -->
+        <constructor-arg value="sid"/>
+        <property name="httpOnly" value="true"/>
+        <!--cookie的有效时间 -->
+        <property name="maxAge" value="-1"/>
+    </bean>
+
+    <!-- custom shiro session listener -->
+    <bean id="customSessionListener" class="com.java.activiti.security.listener.CustomSessionListener">
+        <property name="shiroSessionRepository" ref="jedisShiroSessionRepository"/>
+    </bean>
+
+    <!-- 用户信息记住我功能的相关配置 -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="c-sid"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天时间，记住我30天 -->
+    </bean>
+
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
+        <property name="cipherKey"
+                  value="#{T(org.apache.shiro.codec.Base64).decode('3AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+    <!-- custom shiro session listener -->
+    <bean id="customShiroSessionDAO" class="com.java.activiti.security.CustomShiroSessionDAO">
+        <property name="shiroSessionRepository" ref="jedisShiroSessionRepository"/>
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+    </bean>
+
+    <!-- 手动操作Session，管理Session -->
+    <bean id="customSessionManager" class="com.java.activiti.security.session.CustomSessionManager">
+        <property name="shiroSessionRepository" ref="jedisShiroSessionRepository"/>
+        <property name="customShiroSessionDAO" ref="customShiroSessionDAO"/>
+    </bean>
+
+    <!-- 会话验证调度器 -->
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+        <!-- 间隔多少时间检查，不配置是60分钟 -->
+        <property name="interval" value="${session.validate.timespan}"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <!--Shiro核心组件配置-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--<property name="cacheManager" ref="cacheManager"/>-->
+        <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="userAuthorizingRealm"/>
+            </list>
+        </property>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="cacheManager" ref="customShiroCacheManager"/>
+    </bean>
+
+    <!-- 用户缓存 -->
+    <bean id="customShiroCacheManager" class="com.java.activiti.security.cache.impl.CustomShiroCacheManager">
+        <property name="shiroCacheManager" ref="jedisShiroCacheManager"/>
+    </bean>
+
+    <!-- shiro 缓存实现，对ShiroCacheManager，我是采用redis的实现 -->
+    <bean id="jedisShiroCacheManager" class="com.java.activiti.security.cache.impl.JedisShiroCacheManager">
+        <property name="jedisManager" ref="jedisManager"/>
+    </bean>
+
+    <!-- redis 的缓存 -->
+    <bean id="jedisManager" class="com.java.activiti.security.cache.JedisManager">
+        <property name="jedisPool" ref="jedisPool"/>
+    </bean>
+
+    <!-- 静态注入，相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+<!--    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">-->
+<!--        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>-->
+<!--        <property name="arguments" ref="securityManager"/>-->
+<!--    </bean>-->
+
+    <!-- session 校验单个用户是否多次登录 -->
+    <bean id="kickoutSessionFilter"   class="com.java.activiti.security.filter.KickoutSessionFilter">
+        <property name="kickoutUrl" value="/login.action?kickout"/>
+    </bean>
+
+    <!-- 静态注入 jedisShiroSessionRepository-->
+<!--    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">-->
+<!--        <property name="staticMethod" value="com.java.activiti.security.filter.KickoutSessionFilter"/>-->
+<!--        <property name="arguments" ref="jedisShiroSessionRepository"/>-->
+<!--    </bean>-->
+
+    <!-- Realm的配置 -->
+    <bean id="userAuthorizingRealm" class="com.java.activiti.security.realms.UserAuthorizingRealm"/>
+
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>
+        </property>
+    </bean>
+
+    <!--    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">-->
+    <!--        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>-->
+    <!--    </bean>-->
+
+    <!-- Session Manager -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 相隔多久检查一次session的有效性   -->
+        <property name="sessionValidationInterval" value="1800000"/>
+        <!-- session 有效时间为半小时 （毫秒单位）-->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="sessionDAO" ref="customShiroSessionDAO"/>
+        <!-- session 监听，可以多个。 -->
+        <property name="sessionListeners">
+            <list>
+                <ref bean="customSessionListener"/>
+            </list>
+        </property>
+        <!-- 间隔多少时间检查，不配置是60分钟 -->
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <!-- 是否开启 检测，默认开启 -->
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <!-- 是否删除无效的，默认也是开启 -->
+        <property name="deleteInvalidSessions" value="true"/>
+        <!-- 会话Cookie模板 -->
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+    </bean>
+
+    <!-- session 创建、删除、查询 -->
+    <bean id="jedisShiroSessionRepository" class="com.java.activiti.security.cache.JedisShiroSessionRepository" >
+        <property name="jedisManager" ref="jedisManager"/>
+    </bean>
+
+    <!-- Shiro-Spring整合配置-->
+    <!-- 对安全管理器增强代码 ，spring后处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <!-- 启动shiro注解 -->
+    <!-- 默认使用JDK代理 ，如被代理类没有实现接口，必须使用下列配置开启 cglib代理  -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    
+    <!-- 安全管理器 -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    <!-- shiro的过滤工厂，相当默认的加载了9个过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 安全管理器，shiro核心组件(大脑) Facade模式 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 用户如果没有登陆，当他在访问资源的时候，就会自动跳转到登陆的页面 -->
+        <property name="loginUrl" value="/login"/>
+        <property name="successUrl" value="/main"/>
+        <!-- 当用户没有访问某项资源权限的时候，跳转到该页面 -->
+        <property name="unauthorizedUrl" value="/jsp/unauthorized.html"/>
+        <property name="filters">
+            <util:map>
+                <entry key="roles" value-ref="anyOfRoles"/>
+                <entry key="authc" value-ref="extendFormAuthenticationFilter"/>
+                <entry key="kickout" value-ref="kickoutSessionFilter" />
+            </util:map>
+        </property>
+        <!-- 过滤链的定义：定义URL访问的时候对应的认证或授权时处理的过滤器 -->
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
+    </bean>
+    <!-- 配置身份验证器，处理Ajax请求 -->
+    <bean id="extendFormAuthenticationFilter" class="com.java.activiti.security.filter.ExtendFormAuthenticationFilter">
+        <property name="usernameParam" value="username"/>
+        <property name="passwordParam" value="password"/>
+        <property name="rememberMeParam" value="rememberMe"/>
+        <property name="loginUrl" value="/login"/>
+    </bean>
+    <bean id="anyOfRoles" class="com.java.activiti.security.filter.AnyOfRolesAuthorizationFilter"/>
+    <!-- 配置获取URL权限信息的Factory -->
+    <bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapBuilder"
+          factory-method="builderFilterChainDefinitionMap"/>
+    <bean id="filterChainDefinitionMapBuilder"
+          class="com.java.activiti.security.service.FilterChainDefinitionMapBuilder"/>
+</beans>

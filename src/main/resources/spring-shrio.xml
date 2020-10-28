@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <!--Shiro核心组件配置-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+<!--        <property name="cacheManager" ref="cacheManager"/>-->
+        <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="userAuthorizingRealm"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>
+        </property>
+    </bean>
+
+    <!-- cache配置 -->
+<!--    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">-->
+<!--        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>-->
+<!--    </bean>-->
+
+    <!-- Realm的配置 -->
+    <bean id="userAuthorizingRealm" class="com.java.activiti.security.realms.UserAuthorizingRealm"/>
+
+
+    <!-- Shiro-Spring整合配置-->
+    <!-- 对安全管理器增强代码 ，spring后处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!-- 启动shiro注解 -->
+    <!-- 默认使用JDK代理 ，如被代理类没有实现接口，必须使用下列配置开启 cglib代理  -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <!-- 安全管理器 -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    <!-- shiro的过滤工厂，相当默认的加载了9个过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 安全管理器，shiro核心组件(大脑) Facade模式 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 用户如果没有登陆，当他在访问资源的时候，就会自动跳转到登陆的页面 -->
+        <property name="loginUrl" value="/login"/>
+        <property name="successUrl" value="/main"/>
+        <!-- 当用户没有访问某项资源权限的时候，跳转到该页面 -->
+        <property name="unauthorizedUrl" value="/errorPage/404Error.html"/>
+        <property name="filters">
+            <util:map>
+                <entry key="roles" value-ref="anyOfRoles"/>
+                <entry key="authc" value-ref="extendFormAuthenticationFilter"/>
+            </util:map>
+        </property>
+        <!-- 过滤链的定义：定义URL访问的时候对应的认证或授权时处理的过滤器 -->
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
+    </bean>
+    <!-- 配置身份验证器，处理Ajax请求 -->
+    <bean id="extendFormAuthenticationFilter" class="com.java.activiti.security.filter.ExtendFormAuthenticationFilter">
+        <property name="usernameParam" value="username"/>
+        <property name="passwordParam" value="password"/>
+        <property name="rememberMeParam" value="rememberMe"/>
+        <property name="loginUrl" value="/login"/>
+    </bean>
+    <bean id="anyOfRoles" class="com.java.activiti.security.filter.AnyOfRolesAuthorizationFilter"/>
+    <!-- 配置获取URL权限信息的Factory -->
+    <bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapBuilder"
+          factory-method="builderFilterChainDefinitionMap"/>
+    <bean id="filterChainDefinitionMapBuilder"
+          class="com.java.activiti.security.service.FilterChainDefinitionMapBuilder"/>
+</beans>

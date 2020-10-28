@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.gaizao.GaiZaoDao">
+    <resultMap id="gaizao" type="com.java.activiti.model.gaizao.GaiZao">
+        <id property="gzID" column="gzID"/>
+        <result property="gzcs" column="gzcs"/>
+        <result property="gzDate" column="gzDate"/>
+        <result property="gzxq" column="gzxq"/>
+        <result property="beizu" column="beizu"/>
+        <result property="gzUser" column="gzUesrID"/>
+        <result property="file_id" column="file_id"/>
+        <association property="project" column="projectID" select="com.java.activiti.dao.ProjectDao.findById"/>
+        <association property="userID" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+<!--        <association property="gzUser" column="gzUesrID" select="com.java.activiti.dao.UserDao.findById"/>-->
+        <association property="gzlx" javaType="com.java.activiti.model.MyType">
+            <id property="typeID" column="typeID"/>
+            <result property="typeCode" column="typeCode"/>
+            <result property="typeName" column="typeName"/>
+        </association>
+        <!--        <association property="gzlx" column="{typeID = gzlx, typeCode = 'gzlx'}"-->
+        <!--                     select="com.java.activiti.dao.MyTypeDao.findByIDCode"/>-->
+    </resultMap>
+    <!--    select p.ParkID,p.ParkName,p.CityID,c.CityName,c.Longitude,c.Latitude-->
+    <select id="gaiZaoPage" parameterType="Map" resultMap="gaizao">
+        select * from t_project_gaizao as tpg
+        LEFT JOIN act_id_user as u ON tpg.userId = u.ID_
+        LEFT JOIN t_type as t ON tpg.gzlx= t.typeID
+        LEFT JOIN t_project as pj ON tpg.project_id = pj.ProjectID
+        RIGHT JOIN
+        (
+        select SUBSTRING_INDEX(group_concat(gzID order by `gzDate` desc),',',1)as gzID , COUNT(1)AS gzcs
+        from t_project_gaizao
+        group by project_id
+        )AS b
+        on tpg.gzID = b.gzID
+        where
+        t.typeCode = #{map.typeCode}
+        and
+        tpg.project_id
+        in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="">
+            #{item.projectID, jdbcType=NUMERIC}
+        </foreach>
+        group by tpg.project_id
+        <if test="map.sort!=null and map.sort!='' and map.order!=null and map.order!='' ">
+            order by ${map.sort} ${map.order}
+        </if>
+        <if test="map.pageIndex!=null and map.pageSize!=null">
+            limit #{map.pageIndex},#{map.pageSize}
+        </if>
+    </select>
+    <select id="gaiZaoCount" resultType="int">
+        select count(1) from t_project_gaizao
+        where
+        project_id
+        in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="">
+            #{item.projectID, jdbcType=NUMERIC}
+        </foreach>
+    </select>
+
+    <insert id="addGaiZao" parameterType="com.java.activiti.model.gaizao.GaiZao">
+        insert into t_project_gaizao
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gzID != null">
+                gzID,
+            </if>
+            <if test="project!=null and project.projectID != null">
+                project_id,
+            </if>
+            <if test="userID!=null and userID.id != null">
+                userId,
+            </if>
+            <if test="gzUser!=null">
+                gzUesrID,
+            </if>
+            <if test="gzDate != null">
+                gzDate,
+            </if>
+            <if test="gzlx!=null and gzlx.typeID != null">
+                gzlx,
+            </if>
+            <if test="gzxq != null">
+                gzxq,
+            </if>
+            <if test="beizu != null">
+                beizu,
+            </if>
+            <if test="file_id != null">
+                file_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gzID != null">
+                #{gzID,jdbcType=BIGINT},
+            </if>
+            <if test="project!=null and project.projectID != null">
+                #{project.projectID,jdbcType=BIGINT},
+            </if>
+            <if test="userID!=null and userID.id != null">
+                #{userID.id,jdbcType=VARCHAR},
+            </if>
+            <if test="gzUser!=null">
+                #{gzUser,jdbcType=VARCHAR},
+            </if>
+            <if test="gzDate != null">
+                #{gzDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gzlx!=null and gzlx.typeID != null">
+                #{gzlx.typeID,jdbcType=BIGINT},
+            </if>
+            <if test="gzxq != null">
+                #{gzxq,jdbcType=VARCHAR},
+            </if>
+            <if test="beizu != null">
+                #{beizu,jdbcType=VARCHAR},
+            </if>
+            <if test="file_id != null">
+                #{file_id,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+    </insert>
+
+    <update id="updateGaiZao" parameterType="com.java.activiti.model.gaizao.GaiZao">
+        update t_project_gaizao
+        <set>
+            <if test="project!=null and project.projectID != null">
+                project_id = #{project.projectID,jdbcType=BIGINT},
+            </if>
+            <if test="userID!=null and userID.id != null">
+                userId = #{userID.id,jdbcType=VARCHAR},
+            </if>
+            <if test="gzUser!=null">
+                gzUesrID = #{gzUser,jdbcType=VARCHAR},
+            </if>
+            <if test="gzDate != null">
+                gzDate = #{gzDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gzlx!=null and gzlx.typeID != null">
+                gzlx = #{gzlx.typeID,jdbcType=BIGINT},
+            </if>
+            <if test="gzxq != null">
+                gzxq = #{gzxq,jdbcType=VARCHAR},
+            </if>
+            <if test="beizu != null">
+                beizu = #{beizu,jdbcType=VARCHAR},
+            </if>
+            <if test="file_id != null">
+                file_id = #{file_id,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where gzID = #{gzID}
+    </update>
+
+
+    <select id="gaiZaoDetail" parameterType="Map" resultMap="gaizao">
+        select * from t_project_gaizao as tpg
+        LEFT JOIN act_id_user as u ON tpg.userId = u.ID_
+        LEFT JOIN t_type as t ON tpg.gzlx= t.typeID
+        LEFT JOIN t_project as pj ON tpg.project_id = pj.ProjectID
+        where
+        t.typeCode = #{typeCode}
+        and
+        tpg.project_id = #{projectID}
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <delete id="deleteGaiZao" parameterType="java.util.List">
+        delete from t_project_gaizao where gzID in
+        <foreach collection="list" item="gzID" index="index" open="(" separator="," close=")">
+            #{gzID}
+        </foreach>
+    </delete>
+
+</mapper>

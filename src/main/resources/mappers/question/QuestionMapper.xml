@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.question.QuestionDao">
+    <resultMap type="com.java.activiti.model.question.QuestionInfo" id="QuestionResult">
+        <id property="questionID" column="id"/>
+        <result property="subjectID" column="subject_id"/>
+        <result property="problemTitle" column="problem_title"/>
+        <result property="problemText" column="problem_text"/>
+        <result property="fileBeforeID" column="fileBefore_id"/>
+        <result property="fileAfterID" column="fileAfter_id"/>
+        <result property="questionDate" column="question_date"/>
+        <result property="state" column="state"/>
+        <result property="stateID" column="stateID"/>
+        <result property="processInstanceId" column="processInstanceId"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="park" column="parkID" select="com.java.activiti.dao.ParkDao.findById"/>
+        <association property="project" column="projectID" select="com.java.activiti.dao.ProjectDao.findById"/>
+        <association property="dept" column="deptID" select="com.java.activiti.dao.DeptDao.selectDeptById"/>
+        <association property="fileBefore" javaType="com.java.activiti.model.File">
+            <result property="fileID" column="fileID"/>
+            <result property="repairID" column="fileBefore_id"/>
+            <result property="Path" column="path"/>
+            <result property="remark" column="remark"/>
+            <result property="is_deleted" column="is_deleted"/>
+            <result property="create_time" column="create_time"/>
+        </association>
+        <association property="fileAfter" javaType="com.java.activiti.model.File">
+            <result property="fileID" column="fileID"/>
+            <result property="repairID" column="fileAfter_id"/>
+            <result property="Path" column="path"/>
+            <result property="remark" column="remark"/>
+            <result property="is_deleted" column="is_deleted"/>
+            <result property="create_time" column="create_time"/>
+        </association>
+    </resultMap>
+
+    <select id="questionPage" parameterType="Map" resultMap="QuestionResult">
+        select *
+        from t_question_back
+        as q
+        LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+        LEFT JOIN act_id_userdept as ud ON ud.userID = u.ID_
+        LEFT JOIN act_id_dept as de ON de.deptID = ud.deptID
+        LEFT JOIN t_project as pj ON q.project_id = pj.ProjectID
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and q.userId = #{userId}
+            </if>
+        </where>
+        order by question_date desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="questionCount" parameterType="Map" resultType="int">
+        select count(1) from t_question_back
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and userId = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="questionThrough" parameterType="Map" resultMap="QuestionResult">
+        select * from t_question_back
+        as q
+        LEFT JOIN act_id_user as u ON q.userID = u.ID_
+        LEFT JOIN act_id_dept as d ON q.subject_id= d.deptID
+        LEFT JOIN t_project as pj ON q.project_id = pj.ProjectID
+        LEFT JOIN t_park as pa ON pa.ParkID = pj.ParkID
+        <where>
+            <if test="searchType =='id'and searchType!=null and searchType!='' and searchValue!=null  and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ALLNAME_'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and u.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ParkName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pa.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ProjectName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pj.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="stateID!=null and stateID!='' ">
+                and stateID = #{stateID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and question_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+        order by question_date desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="questionThoughtCount" parameterType="Map" resultType="int">
+        select count(1) from t_question_back as q
+        LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+        LEFT JOIN act_id_userdept as ud ON ud.userID = u.ID_
+        LEFT JOIN act_id_dept as de ON de.deptID = ud.deptID
+        LEFT JOIN t_project as pj ON q.project_id = pj.ProjectID
+        LEFT JOIN t_park as pa ON pa.ParkID = pj.ParkID
+        <where>
+            <if test="searchType =='id'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and q.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ALLNAME_'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and u.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ParkName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pa.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="searchType =='ProjectName'and searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and pj.${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="stateID!=null and stateID!='' ">
+                and stateID = #{stateID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and question_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+    <insert id="addQuestion" parameterType="com.java.activiti.model.question.QuestionInfo">
+        insert into t_question_back
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionID != null">
+                id,
+            </if>
+            <if test="user!=null and user.id != null">
+                userId,
+            </if>
+            <if test="project!=null and project.projectID != null">
+                project_id,
+            </if>
+            <if test="subjectID!=null">
+                subject_id,
+            </if>
+            <if test="problemTitle != null">
+                problem_title,
+            </if>
+            <if test="problemText != null">
+                problem_text,
+            </if>
+            <if test="fileBeforeID != null">
+                fileBefore_id,
+            </if>
+            <if test="fileAfterID != null">
+                fileAfter_id,
+            </if>
+            <if test="questionDate != null">
+                question_date,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="stateID != null">
+                stateID,
+            </if>
+            <if test="processInstanceId != null">
+                processInstanceId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionID != null">
+                #{questionID,jdbcType=VARCHAR},
+            </if>
+            <if test="user!=null and user.id != null">
+                #{user.id,jdbcType=VARCHAR},
+            </if>
+            <if test="project!=null and project.projectID != null">
+                #{project.projectID,jdbcType=BIGINT},
+            </if>
+            <if test="subjectID != null">
+                #{subjectID,jdbcType=VARCHAR},
+            </if>
+            <if test="problemTitle != null">
+                #{problemTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="problemText != null">
+                #{problemText,jdbcType=VARCHAR},
+            </if>
+            <if test="fileBeforeID != null">
+                #{fileBeforeID,jdbcType=VARCHAR},
+            </if>
+            <if test="fileAfterID != null">
+                #{fileAfterID,jdbcType=VARCHAR},
+            </if>
+            <if test="questionDate != null">
+                #{questionDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="stateID != null">
+                #{stateID,jdbcType=INTEGER},
+            </if>
+            <if test="processInstanceId != null">
+                #{processInstanceId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="QuestionResult">
+		select *
+	 	 from  t_question_back as q
+          LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+          LEFT JOIN act_id_userdept as ud ON ud.userID = u.ID_
+          LEFT JOIN act_id_dept as de ON de.deptID = ud.deptID
+          LEFT JOIN t_project as pj ON q.project_id = pj.ProjectID
+          where q.id=#{id}
+	</select>
+
+    <update id="updateQuestion" parameterType="com.java.activiti.model.question.QuestionInfo">
+        update t_question_back
+        <set>
+            <if test="user!=null and user.id != '' ">
+                userId = #{user.id,jdbcType=VARCHAR},
+            </if>
+            <if test="project!=null and project.projectID != null">
+                project_id = #{project.projectID,jdbcType=BIGINT},
+            </if>
+            <if test="subjectID != null">
+                subject_id = #{subjectID,jdbcType=VARCHAR},
+            </if>
+            <if test="problemTitle != null">
+                problem_title = #{problemTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="problemText != null">
+                problem_text = #{problemText,jdbcType=VARCHAR},
+            </if>
+            <if test="fileBeforeID != null and fileAfterID != '' ">
+                fileBefore_id = #{fileBeforeID,jdbcType=VARCHAR},
+            </if>
+            <if test="fileAfterID != null and fileAfterID != '' ">
+                fileAfter_id = #{fileAfterID,jdbcType=VARCHAR},
+            </if>
+            <if test="questionDate != null">
+                question_date = #{questionDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="stateID!=null and stateID!='' ">
+                stateID=#{stateID},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId}
+            </if>
+        </set>
+        where id=#{questionID}
+    </update>
+
+    <select id="getQuestionByTaskId" parameterType="String" resultMap="QuestionResult">
+		select *
+		 	 from  t_question_back as q
+          LEFT JOIN act_id_user as u ON u.ID_ = q.userId
+          LEFT JOIN act_id_userdept as ud ON ud.userID = u.ID_
+          LEFT JOIN act_id_dept as de ON de.deptID = ud.deptID
+          LEFT JOIN t_project as pj ON q.project_id = pj.ProjectID
+		where processInstanceId=#{processInstanceId}
+	</select>
+
+    <select id="selectTaskByProcessID" resultMap="QuestionResult">
+        select *
+        from t_question_back where processInstanceId in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper> 

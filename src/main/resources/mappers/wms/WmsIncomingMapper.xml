@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.wms.WmsIncomingDao">
+
+    <resultMap type="com.java.activiti.model.wms.WmsIncoming" id="WmsIncomingMap">
+        <result property="documentsid" column="documentsId" jdbcType="VARCHAR"/>
+        <result property="companyname" column="companyName" jdbcType="VARCHAR"/>
+        <result property="companyno" column="companyNo" jdbcType="VARCHAR"/>
+        <result property="incomedate" column="inComeDate" jdbcType="OTHER"/>
+        <result property="documenttype" column="documentType" jdbcType="VARCHAR"/>
+        <result property="documentsno" column="documentsNo" jdbcType="VARCHAR"/>
+        <result property="transceivertype" column="transceiverType" jdbcType="VARCHAR"/>
+        <result property="warehouseid" column="warehouseId" jdbcType="INTEGER"/>
+        <result property="innkeeper" column="innkeeper" jdbcType="VARCHAR"/>
+        <result property="department" column="department" jdbcType="VARCHAR"/>
+        <result property="salesman" column="salesMan" jdbcType="VARCHAR"/>
+        <result property="customerno" column="customerNo" jdbcType="VARCHAR"/>
+        <result property="custremno" column="custRemNo" jdbcType="VARCHAR"/>
+        <result property="customername" column="customerName" jdbcType="VARCHAR"/>
+        <result property="suppliername" column="supplierName" jdbcType="VARCHAR"/>
+        <result property="suppierno" column="suppierNo" jdbcType="VARCHAR"/>
+        <result property="supremno" column="supRemNo" jdbcType="VARCHAR"/>
+        <result property="notes" column="notes" jdbcType="VARCHAR"/>
+        <result property="lineno" column="lineNo" jdbcType="INTEGER"/>
+        <result property="inventoryno" column="inventoryNo" jdbcType="VARCHAR"/>
+        <result property="inventoryname" column="inventoryName" jdbcType="VARCHAR"/>
+        <result property="specifications" column="specifications" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="measurementunit" column="measurementUnit" jdbcType="VARCHAR"/>
+        <result property="secondaryunit" column="secondaryUnit" jdbcType="VARCHAR"/>
+        <result property="conversion" column="conversion" jdbcType="VARCHAR"/>
+        <result property="batchno" column="batchNo" jdbcType="VARCHAR"/>
+        <result property="inexnum" column="inExNum" jdbcType="INTEGER"/>
+        <result property="innum" column="inNum" jdbcType="INTEGER"/>
+        <result property="ingross" column="inGross" jdbcType="INTEGER"/>
+        <result property="inprice" column="inPrice" jdbcType="OTHER"/>
+        <result property="inamount" column="inAmount" jdbcType="OTHER"/>
+        <result property="whethergifts" column="whetherGifts" jdbcType="VARCHAR"/>
+        <result property="costobject" column="costObject" jdbcType="VARCHAR"/>
+        <result property="projectname" column="projectName" jdbcType="VARCHAR"/>
+        <result property="projectstage" column="projectStage" jdbcType="VARCHAR"/>
+        <result property="ordersman" column="ordersMan" jdbcType="VARCHAR"/>
+        <result property="signatoryman" column="signatoryMan" jdbcType="VARCHAR"/>
+        <result property="sourcedocutype" column="sourceDocuType" jdbcType="VARCHAR"/>
+        <result property="sourcedocuno" column="sourceDocuNo" jdbcType="VARCHAR"/>
+        <result property="asourcedocutype" column="aSourceDocuType" jdbcType="VARCHAR"/>
+        <result property="asourcedocno" column="aSourceDocNo" jdbcType="VARCHAR"/>
+        <result property="substanceapplistate" column="substanceAppliState" jdbcType="VARCHAR"/>
+        <result property="settlementdepart" column="settlementDepart" jdbcType="VARCHAR"/>
+        <result property="traders" column="traders" jdbcType="VARCHAR"/>
+        <result property="proforma" column="proforma" jdbcType="VARCHAR"/>
+        <result property="reimbursement" column="reimbursement" jdbcType="VARCHAR"/>
+        <result property="purchcoinvotype" column="purchCoInvoType" jdbcType="VARCHAR"/>
+        <result property="whethercollectself" column="whetherCollectSelf" jdbcType="VARCHAR"/>
+        <result property="hudc8h" column="HUDC8h" jdbcType="VARCHAR"/>
+        <result property="subscripdepartformal" column="subscripDepartFormal" jdbcType="VARCHAR"/>
+        <result property="hudc10h" column="HUDC10h" jdbcType="VARCHAR"/>
+        <result property="unitpriceincludtaxtraders" column="unitPriceIncludTaxTraders" jdbcType="VARCHAR"/>
+        <result property="useofcollar" column="useOfCollar" jdbcType="VARCHAR"/>
+        <result property="purcontractremarks" column="purContractRemarks" jdbcType="VARCHAR"/>
+        <result property="purfrommanufacturer" column="purFromManufacturer" jdbcType="VARCHAR"/>
+        <result property="settlementdepartment" column="settlementDepartment" jdbcType="VARCHAR"/>
+        <result property="budc6" column="BUDC6" jdbcType="VARCHAR"/>
+        <result property="budc7" column="BUDC7" jdbcType="VARCHAR"/>
+        <result property="budc8" column="BUDC8" jdbcType="VARCHAR"/>
+        <result property="materialpreplanno" column="materialPrePlanNo" jdbcType="VARCHAR"/>
+        <result property="budc10" column="BUDC10" jdbcType="VARCHAR"/>
+        <result property="budc11" column="BUDC11" jdbcType="VARCHAR"/>
+        <result property="budc12" column="BUDC12" jdbcType="VARCHAR"/>
+        <result property="budc13" column="BUDC13" jdbcType="VARCHAR"/>
+        <result property="budc14" column="BUDC14" jdbcType="VARCHAR"/>
+        <result property="budc15" column="BUDC15" jdbcType="VARCHAR"/>
+        <result property="budc16" column="BUDC16" jdbcType="VARCHAR"/>
+        <result property="budc17" column="BUDC17" jdbcType="VARCHAR"/>
+        <result property="parkoperationproject" column="parkOperationProject" jdbcType="VARCHAR"/>
+        <result property="purposevfeedingscreen" column="purposevFeedingScreen" jdbcType="VARCHAR"/>
+        <result property="whethersubmittedinspection" column="whetherSubmittedInspection" jdbcType="VARCHAR"/>
+        <result property="projectno20180412" column="projectNo20180412" jdbcType="VARCHAR"/>
+        <result property="hudc12h" column="HUDC12h" jdbcType="VARCHAR"/>
+        <result property="hudc13h" column="HUDC13h" jdbcType="VARCHAR"/>
+        <result property="hudc14h" column="HUDC14h" jdbcType="VARCHAR"/>
+        <result property="hudc15h" column="HUDC15h" jdbcType="VARCHAR"/>
+        <result property="hudc16h" column="HUDC16h" jdbcType="VARCHAR"/>
+        <result property="wheresearchdevelopment" column="wheResearchDevelopment" jdbcType="VARCHAR"/>
+        <result property="inagent" column="inAgent" jdbcType="VARCHAR"/>
+        <result property="procurementtype" column="procurementType" jdbcType="VARCHAR"/>
+        <result property="requiredcompletiondate" column="requiredCompletionDate" jdbcType="OTHER"/>
+        <result property="receivablenum" column="receivableNum" jdbcType="INTEGER"/>
+        <result property="receivableexnum" column="receivableExNum" jdbcType="INTEGER"/>
+        <result property="bodyremark" column="bodyRemark" jdbcType="VARCHAR"/>
+        <result property="transferoutcompany" column="transferOutCompany" jdbcType="VARCHAR"/>
+        <result property="transferoutorganization" column="transferOutOrganization" jdbcType="VARCHAR"/>
+        <result property="transferoutwarehouse" column="transferOutWarehouse" jdbcType="VARCHAR"/>
+        <result property="settlecompmark" column="settleCompMark" jdbcType="VARCHAR"/>
+        <result property="settleamount" column="settleAmount" jdbcType="OTHER"/>
+        <result property="settenum" column="setteNum" jdbcType="INTEGER"/>
+        <result property="estimatemoney" column="estimateMoney" jdbcType="OTHER"/>
+        <result property="userid" column="userId" jdbcType="VARCHAR"/>
+        <result property="indate" column="inDate" jdbcType="TIMESTAMP"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="inventory" column="inventoryNo" select="com.java.activiti.dao.wms.WmsGoodDao.findById"/>
+        <association property="warehouse" column="warehouseId" select="com.java.activiti.dao.wms.WarehouseDao.findById"/>
+
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WmsIncomingMap">
+        select
+          documentsId, companyName, companyNo, inComeDate, documentType, documentsNo, transceiverType, warehouseId, innkeeper, department, salesMan, customerNo, custRemNo, customerName, supplierName, suppierNo, supRemNo, notes, lineNo, inventoryNo, inventoryName, specifications, model, measurementUnit, secondaryUnit, conversion, batchNo, inExNum, inNum, inGross, inPrice, inAmount, whetherGifts, costObject, projectName, projectStage, ordersMan, signatoryMan, sourceDocuType, sourceDocuNo, aSourceDocuType, aSourceDocNo, substanceAppliState, settlementDepart, traders, proforma, reimbursement, purchCoInvoType, whetherCollectSelf, HUDC8h, subscripDepartFormal, HUDC10h, unitPriceIncludTaxTraders, useOfCollar, purContractRemarks, purFromManufacturer, settlementDepartment, BUDC6, BUDC7, BUDC8, materialPrePlanNo, BUDC10, BUDC11, BUDC12, BUDC13, BUDC14, BUDC15, BUDC16, BUDC17, parkOperationProject, purposevFeedingScreen, whetherSubmittedInspection, projectNo20180412, HUDC12h, HUDC13h, HUDC14h, HUDC15h, HUDC16h, wheResearchDevelopment, inAgent, procurementType, requiredCompletionDate, receivableNum, receivableExNum, bodyRemark, transferOutCompany, transferOutOrganization, transferOutWarehouse, settleCompMark, settleAmount, setteNum, estimateMoney, userId, inDate
+        from xuchao.wms_incoming
+        where documentsId = #{documentsid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="WmsIncomingPage" parameterType="Map" resultMap="WmsIncomingMap">
+        select
+          documentsId, companyName, companyNo, inComeDate, documentType, documentsNo, transceiverType, warehouseId, innkeeper, department, salesMan, customerNo, custRemNo, customerName, supplierName, suppierNo, supRemNo, notes, lineNo, inventoryNo, inventoryName, specifications, model, measurementUnit, secondaryUnit, conversion, batchNo, inExNum, inNum, inGross, inPrice, inAmount, whetherGifts, costObject, projectName, projectStage, ordersMan, signatoryMan, sourceDocuType, sourceDocuNo, aSourceDocuType, aSourceDocNo, substanceAppliState, settlementDepart, traders, proforma, reimbursement, purchCoInvoType, whetherCollectSelf, HUDC8h, subscripDepartFormal, HUDC10h, unitPriceIncludTaxTraders, useOfCollar, purContractRemarks, purFromManufacturer, settlementDepartment, BUDC6, BUDC7, BUDC8, materialPrePlanNo, BUDC10, BUDC11, BUDC12, BUDC13, BUDC14, BUDC15, BUDC16, BUDC17, parkOperationProject, purposevFeedingScreen, whetherSubmittedInspection, projectNo20180412, HUDC12h, HUDC13h, HUDC14h, HUDC15h, HUDC16h, wheResearchDevelopment, inAgent, procurementType, requiredCompletionDate, receivableNum, receivableExNum, bodyRemark, transferOutCompany, transferOutOrganization, transferOutWarehouse, settleCompMark, settleAmount, setteNum, estimateMoney, userId, inDate
+        from wms_incoming
+        <where>
+            <if test="inventoryNo!=null and inventoryNo!='' ">
+                and inventoryNo = #{inventoryNo}
+            </if>
+            <if test="warehouseId!=null and warehouseId!='' ">
+                and warehouseId = #{warehouseId}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="WmsIncomingCount" parameterType="Map" resultType="int">
+        select count(1) from wms_incoming
+        <where>
+            <if test="inventoryNo!=null and inventoryNo!='' ">
+                and inventoryNo = #{inventoryNo}
+            </if>
+            <if test="warehouseId!=null and warehouseId!='' ">
+                and warehouseId = #{warehouseId}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="WmsIncomingMap">
+        select
+          documentsId, companyName, companyNo, inComeDate, documentType, documentsNo, transceiverType, warehouseId, innkeeper, department, salesMan, customerNo, custRemNo, customerName, supplierName, suppierNo, supRemNo, notes, lineNo, inventoryNo, inventoryName, specifications, model, measurementUnit, secondaryUnit, conversion, batchNo, inExNum, inNum, inGross, inPrice, inAmount, whetherGifts, costObject, projectName, projectStage, ordersMan, signatoryMan, sourceDocuType, sourceDocuNo, aSourceDocuType, aSourceDocNo, substanceAppliState, settlementDepart, traders, proforma, reimbursement, purchCoInvoType, whetherCollectSelf, HUDC8h, subscripDepartFormal, HUDC10h, unitPriceIncludTaxTraders, useOfCollar, purContractRemarks, purFromManufacturer, settlementDepartment, BUDC6, BUDC7, BUDC8, materialPrePlanNo, BUDC10, BUDC11, BUDC12, BUDC13, BUDC14, BUDC15, BUDC16, BUDC17, parkOperationProject, purposevFeedingScreen, whetherSubmittedInspection, projectNo20180412, HUDC12h, HUDC13h, HUDC14h, HUDC15h, HUDC16h, wheResearchDevelopment, inAgent, procurementType, requiredCompletionDate, receivableNum, receivableExNum, bodyRemark, transferOutCompany, transferOutOrganization, transferOutWarehouse, settleCompMark, settleAmount, setteNum, estimateMoney, userId, inDate
+        from wms_incoming
+        <where>
+            <if test="documentsid != null and documentsid != ''">
+                and documentsId = #{documentsid}
+            </if>
+            <if test="companyname != null and companyname != ''">
+                and companyName = #{companyname}
+            </if>
+            <if test="companyno != null and companyno != ''">
+                and companyNo = #{companyno}
+            </if>
+            <if test="incomedate != null">
+                and inComeDate = #{incomedate}
+            </if>
+            <if test="documenttype != null and documenttype != ''">
+                and documentType = #{documenttype}
+            </if>
+            <if test="documentsno != null and documentsno != ''">
+                and documentsNo = #{documentsno}
+            </if>
+            <if test="transceivertype != null and transceivertype != ''">
+                and transceiverType = #{transceivertype}
+            </if>
+            <if test="warehouseid != null">
+                and warehouseId = #{warehouseid}
+            </if>
+            <if test="innkeeper != null and innkeeper != ''">
+                and innkeeper = #{innkeeper}
+            </if>
+            <if test="department != null and department != ''">
+                and department = #{department}
+            </if>
+            <if test="salesman != null and salesman != ''">
+                and salesMan = #{salesman}
+            </if>
+            <if test="customerno != null and customerno != ''">
+                and customerNo = #{customerno}
+            </if>
+            <if test="custremno != null and custremno != ''">
+                and custRemNo = #{custremno}
+            </if>
+            <if test="customername != null and customername != ''">
+                and customerName = #{customername}
+            </if>
+            <if test="suppliername != null and suppliername != ''">
+                and supplierName = #{suppliername}
+            </if>
+            <if test="suppierno != null and suppierno != ''">
+                and suppierNo = #{suppierno}
+            </if>
+            <if test="supremno != null and supremno != ''">
+                and supRemNo = #{supremno}
+            </if>
+            <if test="notes != null and notes != ''">
+                and notes = #{notes}
+            </if>
+            <if test="lineno != null">
+                and lineNo = #{lineno}
+            </if>
+            <if test="inventoryno != null">
+                and inventoryNo = #{inventoryno}
+            </if>
+            <if test="inventoryname != null and inventoryname != ''">
+                and inventoryName = #{inventoryname}
+            </if>
+            <if test="specifications != null and specifications != ''">
+                and specifications = #{specifications}
+            </if>
+            <if test="model != null and model != ''">
+                and model = #{model}
+            </if>
+            <if test="measurementunit != null and measurementunit != ''">
+                and measurementUnit = #{measurementunit}
+            </if>
+            <if test="secondaryunit != null and secondaryunit != ''">
+                and secondaryUnit = #{secondaryunit}
+            </if>
+            <if test="conversion != null and conversion != ''">
+                and conversion = #{conversion}
+            </if>
+            <if test="batchno != null and batchno != ''">
+                and batchNo = #{batchno}
+            </if>
+            <if test="inexnum != null">
+                and inExNum = #{inexnum}
+            </if>
+            <if test="innum != null">
+                and inNum = #{innum}
+            </if>
+            <if test="ingross != null">
+                and inGross = #{ingross}
+            </if>
+            <if test="inprice != null">
+                and inPrice = #{inprice}
+            </if>
+            <if test="inamount != null">
+                and inAmount = #{inamount}
+            </if>
+            <if test="whethergifts != null and whethergifts != ''">
+                and whetherGifts = #{whethergifts}
+            </if>
+            <if test="costobject != null and costobject != ''">
+                and costObject = #{costobject}
+            </if>
+            <if test="projectname != null and projectname != ''">
+                and projectName = #{projectname}
+            </if>
+            <if test="projectstage != null and projectstage != ''">
+                and projectStage = #{projectstage}
+            </if>
+            <if test="ordersman != null and ordersman != ''">
+                and ordersMan = #{ordersman}
+            </if>
+            <if test="signatoryman != null and signatoryman != ''">
+                and signatoryMan = #{signatoryman}
+            </if>
+            <if test="sourcedocutype != null and sourcedocutype != ''">
+                and sourceDocuType = #{sourcedocutype}
+            </if>
+            <if test="sourcedocuno != null and sourcedocuno != ''">
+                and sourceDocuNo = #{sourcedocuno}
+            </if>
+            <if test="asourcedocutype != null and asourcedocutype != ''">
+                and aSourceDocuType = #{asourcedocutype}
+            </if>
+            <if test="asourcedocno != null and asourcedocno != ''">
+                and aSourceDocNo = #{asourcedocno}
+            </if>
+            <if test="substanceapplistate != null and substanceapplistate != ''">
+                and substanceAppliState = #{substanceapplistate}
+            </if>
+            <if test="settlementdepart != null and settlementdepart != ''">
+                and settlementDepart = #{settlementdepart}
+            </if>
+            <if test="traders != null and traders != ''">
+                and traders = #{traders}
+            </if>
+            <if test="proforma != null and proforma != ''">
+                and proforma = #{proforma}
+            </if>
+            <if test="reimbursement != null and reimbursement != ''">
+                and reimbursement = #{reimbursement}
+            </if>
+            <if test="purchcoinvotype != null and purchcoinvotype != ''">
+                and purchCoInvoType = #{purchcoinvotype}
+            </if>
+            <if test="whethercollectself != null and whethercollectself != ''">
+                and whetherCollectSelf = #{whethercollectself}
+            </if>
+            <if test="hudc8h != null and hudc8h != ''">
+                and HUDC8h = #{hudc8h}
+            </if>
+            <if test="subscripdepartformal != null and subscripdepartformal != ''">
+                and subscripDepartFormal = #{subscripdepartformal}
+            </if>
+            <if test="hudc10h != null and hudc10h != ''">
+                and HUDC10h = #{hudc10h}
+            </if>
+            <if test="unitpriceincludtaxtraders != null and unitpriceincludtaxtraders != ''">
+                and unitPriceIncludTaxTraders = #{unitpriceincludtaxtraders}
+            </if>
+            <if test="useofcollar != null and useofcollar != ''">
+                and useOfCollar = #{useofcollar}
+            </if>
+            <if test="purcontractremarks != null and purcontractremarks != ''">
+                and purContractRemarks = #{purcontractremarks}
+            </if>
+            <if test="purfrommanufacturer != null and purfrommanufacturer != ''">
+                and purFromManufacturer = #{purfrommanufacturer}
+            </if>
+            <if test="settlementdepartment != null and settlementdepartment != ''">
+                and settlementDepartment = #{settlementdepartment}
+            </if>
+            <if test="budc6 != null and budc6 != ''">
+                and BUDC6 = #{budc6}
+            </if>
+            <if test="budc7 != null and budc7 != ''">
+                and BUDC7 = #{budc7}
+            </if>
+            <if test="budc8 != null and budc8 != ''">
+                and BUDC8 = #{budc8}
+            </if>
+            <if test="materialpreplanno != null and materialpreplanno != ''">
+                and materialPrePlanNo = #{materialpreplanno}
+            </if>
+            <if test="budc10 != null and budc10 != ''">
+                and BUDC10 = #{budc10}
+            </if>
+            <if test="budc11 != null and budc11 != ''">
+                and BUDC11 = #{budc11}
+            </if>
+            <if test="budc12 != null and budc12 != ''">
+                and BUDC12 = #{budc12}
+            </if>
+            <if test="budc13 != null and budc13 != ''">
+                and BUDC13 = #{budc13}
+            </if>
+            <if test="budc14 != null and budc14 != ''">
+                and BUDC14 = #{budc14}
+            </if>
+            <if test="budc15 != null and budc15 != ''">
+                and BUDC15 = #{budc15}
+            </if>
+            <if test="budc16 != null and budc16 != ''">
+                and BUDC16 = #{budc16}
+            </if>
+            <if test="budc17 != null and budc17 != ''">
+                and BUDC17 = #{budc17}
+            </if>
+            <if test="parkoperationproject != null and parkoperationproject != ''">
+                and parkOperationProject = #{parkoperationproject}
+            </if>
+            <if test="purposevfeedingscreen != null and purposevfeedingscreen != ''">
+                and purposevFeedingScreen = #{purposevfeedingscreen}
+            </if>
+            <if test="whethersubmittedinspection != null and whethersubmittedinspection != ''">
+                and whetherSubmittedInspection = #{whethersubmittedinspection}
+            </if>
+            <if test="projectno20180412 != null and projectno20180412 != ''">
+                and projectNo20180412 = #{projectno20180412}
+            </if>
+            <if test="hudc12h != null and hudc12h != ''">
+                and HUDC12h = #{hudc12h}
+            </if>
+            <if test="hudc13h != null and hudc13h != ''">
+                and HUDC13h = #{hudc13h}
+            </if>
+            <if test="hudc14h != null and hudc14h != ''">
+                and HUDC14h = #{hudc14h}
+            </if>
+            <if test="hudc15h != null and hudc15h != ''">
+                and HUDC15h = #{hudc15h}
+            </if>
+            <if test="hudc16h != null and hudc16h != ''">
+                and HUDC16h = #{hudc16h}
+            </if>
+            <if test="wheresearchdevelopment != null and wheresearchdevelopment != ''">
+                and wheResearchDevelopment = #{wheresearchdevelopment}
+            </if>
+            <if test="inagent != null and inagent != ''">
+                and inAgent = #{inagent}
+            </if>
+            <if test="procurementtype != null and procurementtype != ''">
+                and procurementType = #{procurementtype}
+            </if>
+            <if test="requiredcompletiondate != null">
+                and requiredCompletionDate = #{requiredcompletiondate}
+            </if>
+            <if test="receivablenum != null">
+                and receivableNum = #{receivablenum}
+            </if>
+            <if test="receivableexnum != null">
+                and receivableExNum = #{receivableexnum}
+            </if>
+            <if test="bodyremark != null and bodyremark != ''">
+                and bodyRemark = #{bodyremark}
+            </if>
+            <if test="transferoutcompany != null and transferoutcompany != ''">
+                and transferOutCompany = #{transferoutcompany}
+            </if>
+            <if test="transferoutorganization != null and transferoutorganization != ''">
+                and transferOutOrganization = #{transferoutorganization}
+            </if>
+            <if test="transferoutwarehouse != null and transferoutwarehouse != ''">
+                and transferOutWarehouse = #{transferoutwarehouse}
+            </if>
+            <if test="settlecompmark != null and settlecompmark != ''">
+                and settleCompMark = #{settlecompmark}
+            </if>
+            <if test="settleamount != null">
+                and settleAmount = #{settleamount}
+            </if>
+            <if test="settenum != null">
+                and setteNum = #{settenum}
+            </if>
+            <if test="estimatemoney != null">
+                and estimateMoney = #{estimatemoney}
+            </if>
+            <if test="userid != null and userid != ''">
+                and userId = #{userid}
+            </if>
+            <if test="indate != null">
+                and inDate = #{indate}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert">
+        insert into wms_incoming(documentsid,companyName, companyNo, inComeDate, documentType, documentsNo, transceiverType, warehouseId, innkeeper, department, salesMan, customerNo, custRemNo, customerName, supplierName, suppierNo, supRemNo, notes, lineNo, inventoryNo, inventoryName, specifications, model, measurementUnit, secondaryUnit, conversion, batchNo, inExNum, inNum, inGross, inPrice, inAmount, whetherGifts, costObject, projectName, projectStage, ordersMan, signatoryMan, sourceDocuType, sourceDocuNo, aSourceDocuType, aSourceDocNo, substanceAppliState, settlementDepart, traders, proforma, reimbursement, purchCoInvoType, whetherCollectSelf, HUDC8h, subscripDepartFormal, HUDC10h, unitPriceIncludTaxTraders, useOfCollar, purContractRemarks, purFromManufacturer, settlementDepartment, BUDC6, BUDC7, BUDC8, materialPrePlanNo, BUDC10, BUDC11, BUDC12, BUDC13, BUDC14, BUDC15, BUDC16, BUDC17, parkOperationProject, purposevFeedingScreen, whetherSubmittedInspection, projectNo20180412, HUDC12h, HUDC13h, HUDC14h, HUDC15h, HUDC16h, wheResearchDevelopment, inAgent, procurementType, requiredCompletionDate, receivableNum, receivableExNum, bodyRemark, transferOutCompany, transferOutOrganization, transferOutWarehouse, settleCompMark, settleAmount, setteNum, estimateMoney, userId, inDate)
+        values (#{documentsid},#{companyname}, #{companyno}, #{incomedate}, #{documenttype}, #{documentsno}, #{transceivertype}, #{warehouseid}, #{innkeeper}, #{department}, #{salesman}, #{customerno}, #{custremno}, #{customername}, #{suppliername}, #{suppierno}, #{supremno}, #{notes}, #{lineno}, #{inventoryno}, #{inventoryname}, #{specifications}, #{model}, #{measurementunit}, #{secondaryunit}, #{conversion}, #{batchno}, #{inexnum}, #{innum}, #{ingross}, #{inprice}, #{inamount}, #{whethergifts}, #{costobject}, #{projectname}, #{projectstage}, #{ordersman}, #{signatoryman}, #{sourcedocutype}, #{sourcedocuno}, #{asourcedocutype}, #{asourcedocno}, #{substanceapplistate}, #{settlementdepart}, #{traders}, #{proforma}, #{reimbursement}, #{purchcoinvotype}, #{whethercollectself}, #{hudc8h}, #{subscripdepartformal}, #{hudc10h}, #{unitpriceincludtaxtraders}, #{useofcollar}, #{purcontractremarks}, #{purfrommanufacturer}, #{settlementdepartment}, #{budc6}, #{budc7}, #{budc8}, #{materialpreplanno}, #{budc10}, #{budc11}, #{budc12}, #{budc13}, #{budc14}, #{budc15}, #{budc16}, #{budc17}, #{parkoperationproject}, #{purposevfeedingscreen}, #{whethersubmittedinspection}, #{projectno20180412}, #{hudc12h}, #{hudc13h}, #{hudc14h}, #{hudc15h}, #{hudc16h}, #{wheresearchdevelopment}, #{inagent}, #{procurementtype}, #{requiredcompletiondate}, #{receivablenum}, #{receivableexnum}, #{bodyremark}, #{transferoutcompany}, #{transferoutorganization}, #{transferoutwarehouse}, #{settlecompmark}, #{settleamount}, #{settenum}, #{estimatemoney}, #{userid}, #{indate})
+    </insert>
+    <!--新增所有列-->
+    <insert id="insertByBatch">
+        insert into wms_incoming(documentsid,companyName, companyNo, inComeDate, documentType, documentsNo, transceiverType, warehouseId, innkeeper, department, salesMan, customerNo, custRemNo, customerName, supplierName, suppierNo, supRemNo, notes, lineNo, inventoryNo, inventoryName, specifications, model, measurementUnit, secondaryUnit, conversion, batchNo, inExNum, inNum, inGross, inPrice, inAmount, whetherGifts, costObject, projectName, projectStage, ordersMan, signatoryMan, sourceDocuType, sourceDocuNo, aSourceDocuType, aSourceDocNo, substanceAppliState, settlementDepart, traders, proforma, reimbursement, purchCoInvoType, whetherCollectSelf, HUDC8h, subscripDepartFormal, HUDC10h, unitPriceIncludTaxTraders, useOfCollar, purContractRemarks, purFromManufacturer, settlementDepartment, BUDC6, BUDC7, BUDC8, materialPrePlanNo, BUDC10, BUDC11, BUDC12, BUDC13, BUDC14, BUDC15, BUDC16, BUDC17, parkOperationProject, purposevFeedingScreen, whetherSubmittedInspection, projectNo20180412, HUDC12h, HUDC13h, HUDC14h, HUDC15h, HUDC16h, wheResearchDevelopment, inAgent, procurementType, requiredCompletionDate, receivableNum, receivableExNum, bodyRemark, transferOutCompany, transferOutOrganization, transferOutWarehouse, settleCompMark, settleAmount, setteNum, estimateMoney, userId, inDate)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.documentsid},#{item.companyname}, #{item.companyno}, #{item.incomedate},
+             #{item.documenttype}, #{item.documentsno}, #{item.transceivertype},
+             #{item.warehouseid}, #{item.innkeeper}, #{item.department}, #{item.salesman},
+              #{item.customerno}, #{item.custremno}, #{item.customername}, #{item.suppliername},
+               #{item.suppierno}, #{item.supremno}, #{item.notes}, #{item.lineno},
+                #{item.inventoryno}, #{item.inventoryname}, #{item.specifications}, #{item.model},
+                #{item.measurementunit}, #{item.secondaryunit}, #{item.conversion}, #{item.batchno},
+                #{item.inexnum}, #{item.innum}, #{item.ingross}, #{item.inprice}, #{item.inamount},
+                 #{item.whethergifts}, #{item.costobject}, #{item.projectname}, #{item.projectstage},
+                  #{item.ordersman}, #{item.signatoryman}, #{item.sourcedocutype}, #{item.sourcedocuno},
+                   #{item.asourcedocutype}, #{item.asourcedocno}, #{item.substanceapplistate},
+                    #{item.settlementdepart}, #{item.traders}, #{item.proforma}, #{item.reimbursement},
+                     #{item.purchcoinvotype}, #{item.whethercollectself}, #{item.hudc8h},
+                     #{item.subscripdepartformal}, #{item.hudc10h}, #{item.unitpriceincludtaxtraders},
+                      #{item.useofcollar}, #{item.purcontractremarks}, #{item.purfrommanufacturer},
+                      #{item.settlementdepartment}, #{item.budc6}, #{item.budc7}, #{item.budc8},
+                       #{item.materialpreplanno}, #{item.budc10}, #{item.budc11}, #{item.budc12},
+                        #{item.budc13}, #{item.budc14}, #{item.budc15}, #{item.budc16},
+                         #{item.budc17}, #{item.parkoperationproject}, #{item.purposevfeedingscreen},
+                          #{item.whethersubmittedinspection}, #{item.projectno20180412},
+                          #{item.hudc12h}, #{item.hudc13h}, #{item.hudc14h}, #{item.hudc15h},
+                          #{item.hudc16h}, #{item.wheresearchdevelopment}, #{item.inagent},
+                           #{item.procurementtype}, #{item.requiredcompletiondate},
+                            #{item.receivablenum}, #{item.receivableexnum}, #{item.bodyremark},
+                             #{item.transferoutcompany}, #{item.transferoutorganization},
+                              #{item.transferoutwarehouse}, #{item.settlecompmark},
+                              #{item.settleamount}, #{item.settenum}, #{item.estimatemoney},
+                              #{item.userid}, #{item.indate})
+        </foreach>
+
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update wms_incoming
+        <set>
+            <if test="companyname != null and companyname != ''">
+                companyName = #{companyname},
+            </if>
+            <if test="companyno != null and companyno != ''">
+                companyNo = #{companyno},
+            </if>
+            <if test="incomedate != null">
+                inComeDate = #{incomedate},
+            </if>
+            <if test="documenttype != null and documenttype != ''">
+                documentType = #{documenttype},
+            </if>
+            <if test="documentsno != null and documentsno != ''">
+                documentsNo = #{documentsno},
+            </if>
+            <if test="transceivertype != null and transceivertype != ''">
+                transceiverType = #{transceivertype},
+            </if>
+            <if test="warehouseid != null">
+                warehouseId = #{warehouseid},
+            </if>
+            <if test="innkeeper != null and innkeeper != ''">
+                innkeeper = #{innkeeper},
+            </if>
+            <if test="department != null and department != ''">
+                department = #{department},
+            </if>
+            <if test="salesman != null and salesman != ''">
+                salesMan = #{salesman},
+            </if>
+            <if test="customerno != null and customerno != ''">
+                customerNo = #{customerno},
+            </if>
+            <if test="custremno != null and custremno != ''">
+                custRemNo = #{custremno},
+            </if>
+            <if test="customername != null and customername != ''">
+                customerName = #{customername},
+            </if>
+            <if test="suppliername != null and suppliername != ''">
+                supplierName = #{suppliername},
+            </if>
+            <if test="suppierno != null and suppierno != ''">
+                suppierNo = #{suppierno},
+            </if>
+            <if test="supremno != null and supremno != ''">
+                supRemNo = #{supremno},
+            </if>
+            <if test="notes != null and notes != ''">
+                notes = #{notes},
+            </if>
+            <if test="lineno != null">
+                lineNo = #{lineno},
+            </if>
+            <if test="inventoryno != null">
+                inventoryNo = #{inventoryno},
+            </if>
+            <if test="inventoryname != null and inventoryname != ''">
+                inventoryName = #{inventoryname},
+            </if>
+            <if test="specifications != null and specifications != ''">
+                specifications = #{specifications},
+            </if>
+            <if test="model != null and model != ''">
+                model = #{model},
+            </if>
+            <if test="measurementunit != null and measurementunit != ''">
+                measurementUnit = #{measurementunit},
+            </if>
+            <if test="secondaryunit != null and secondaryunit != ''">
+                secondaryUnit = #{secondaryunit},
+            </if>
+            <if test="conversion != null and conversion != ''">
+                conversion = #{conversion},
+            </if>
+            <if test="batchno != null and batchno != ''">
+                batchNo = #{batchno},
+            </if>
+            <if test="inexnum != null">
+                inExNum = #{inexnum},
+            </if>
+            <if test="innum != null">
+                inNum = #{innum},
+            </if>
+            <if test="ingross != null">
+                inGross = #{ingross},
+            </if>
+            <if test="inprice != null">
+                inPrice = #{inprice},
+            </if>
+            <if test="inamount != null">
+                inAmount = #{inamount},
+            </if>
+            <if test="whethergifts != null and whethergifts != ''">
+                whetherGifts = #{whethergifts},
+            </if>
+            <if test="costobject != null and costobject != ''">
+                costObject = #{costobject},
+            </if>
+            <if test="projectname != null and projectname != ''">
+                projectName = #{projectname},
+            </if>
+            <if test="projectstage != null and projectstage != ''">
+                projectStage = #{projectstage},
+            </if>
+            <if test="ordersman != null and ordersman != ''">
+                ordersMan = #{ordersman},
+            </if>
+            <if test="signatoryman != null and signatoryman != ''">
+                signatoryMan = #{signatoryman},
+            </if>
+            <if test="sourcedocutype != null and sourcedocutype != ''">
+                sourceDocuType = #{sourcedocutype},
+            </if>
+            <if test="sourcedocuno != null and sourcedocuno != ''">
+                sourceDocuNo = #{sourcedocuno},
+            </if>
+            <if test="asourcedocutype != null and asourcedocutype != ''">
+                aSourceDocuType = #{asourcedocutype},
+            </if>
+            <if test="asourcedocno != null and asourcedocno != ''">
+                aSourceDocNo = #{asourcedocno},
+            </if>
+            <if test="substanceapplistate != null and substanceapplistate != ''">
+                substanceAppliState = #{substanceapplistate},
+            </if>
+            <if test="settlementdepart != null and settlementdepart != ''">
+                settlementDepart = #{settlementdepart},
+            </if>
+            <if test="traders != null and traders != ''">
+                traders = #{traders},
+            </if>
+            <if test="proforma != null and proforma != ''">
+                proforma = #{proforma},
+            </if>
+            <if test="reimbursement != null and reimbursement != ''">
+                reimbursement = #{reimbursement},
+            </if>
+            <if test="purchcoinvotype != null and purchcoinvotype != ''">
+                purchCoInvoType = #{purchcoinvotype},
+            </if>
+            <if test="whethercollectself != null and whethercollectself != ''">
+                whetherCollectSelf = #{whethercollectself},
+            </if>
+            <if test="hudc8h != null and hudc8h != ''">
+                HUDC8h = #{hudc8h},
+            </if>
+            <if test="subscripdepartformal != null and subscripdepartformal != ''">
+                subscripDepartFormal = #{subscripdepartformal},
+            </if>
+            <if test="hudc10h != null and hudc10h != ''">
+                HUDC10h = #{hudc10h},
+            </if>
+            <if test="unitpriceincludtaxtraders != null and unitpriceincludtaxtraders != ''">
+                unitPriceIncludTaxTraders = #{unitpriceincludtaxtraders},
+            </if>
+            <if test="useofcollar != null and useofcollar != ''">
+                useOfCollar = #{useofcollar},
+            </if>
+            <if test="purcontractremarks != null and purcontractremarks != ''">
+                purContractRemarks = #{purcontractremarks},
+            </if>
+            <if test="purfrommanufacturer != null and purfrommanufacturer != ''">
+                purFromManufacturer = #{purfrommanufacturer},
+            </if>
+            <if test="settlementdepartment != null and settlementdepartment != ''">
+                settlementDepartment = #{settlementdepartment},
+            </if>
+            <if test="budc6 != null and budc6 != ''">
+                BUDC6 = #{budc6},
+            </if>
+            <if test="budc7 != null and budc7 != ''">
+                BUDC7 = #{budc7},
+            </if>
+            <if test="budc8 != null and budc8 != ''">
+                BUDC8 = #{budc8},
+            </if>
+            <if test="materialpreplanno != null and materialpreplanno != ''">
+                materialPrePlanNo = #{materialpreplanno},
+            </if>
+            <if test="budc10 != null and budc10 != ''">
+                BUDC10 = #{budc10},
+            </if>
+            <if test="budc11 != null and budc11 != ''">
+                BUDC11 = #{budc11},
+            </if>
+            <if test="budc12 != null and budc12 != ''">
+                BUDC12 = #{budc12},
+            </if>
+            <if test="budc13 != null and budc13 != ''">
+                BUDC13 = #{budc13},
+            </if>
+            <if test="budc14 != null and budc14 != ''">
+                BUDC14 = #{budc14},
+            </if>
+            <if test="budc15 != null and budc15 != ''">
+                BUDC15 = #{budc15},
+            </if>
+            <if test="budc16 != null and budc16 != ''">
+                BUDC16 = #{budc16},
+            </if>
+            <if test="budc17 != null and budc17 != ''">
+                BUDC17 = #{budc17},
+            </if>
+            <if test="parkoperationproject != null and parkoperationproject != ''">
+                parkOperationProject = #{parkoperationproject},
+            </if>
+            <if test="purposevfeedingscreen != null and purposevfeedingscreen != ''">
+                purposevFeedingScreen = #{purposevfeedingscreen},
+            </if>
+            <if test="whethersubmittedinspection != null and whethersubmittedinspection != ''">
+                whetherSubmittedInspection = #{whethersubmittedinspection},
+            </if>
+            <if test="projectno20180412 != null and projectno20180412 != ''">
+                projectNo20180412 = #{projectno20180412},
+            </if>
+            <if test="hudc12h != null and hudc12h != ''">
+                HUDC12h = #{hudc12h},
+            </if>
+            <if test="hudc13h != null and hudc13h != ''">
+                HUDC13h = #{hudc13h},
+            </if>
+            <if test="hudc14h != null and hudc14h != ''">
+                HUDC14h = #{hudc14h},
+            </if>
+            <if test="hudc15h != null and hudc15h != ''">
+                HUDC15h = #{hudc15h},
+            </if>
+            <if test="hudc16h != null and hudc16h != ''">
+                HUDC16h = #{hudc16h},
+            </if>
+            <if test="wheresearchdevelopment != null and wheresearchdevelopment != ''">
+                wheResearchDevelopment = #{wheresearchdevelopment},
+            </if>
+            <if test="inagent != null and inagent != ''">
+                inAgent = #{inagent},
+            </if>
+            <if test="procurementtype != null and procurementtype != ''">
+                procurementType = #{procurementtype},
+            </if>
+            <if test="requiredcompletiondate != null">
+                requiredCompletionDate = #{requiredcompletiondate},
+            </if>
+            <if test="receivablenum != null">
+                receivableNum = #{receivablenum},
+            </if>
+            <if test="receivableexnum != null">
+                receivableExNum = #{receivableexnum},
+            </if>
+            <if test="bodyremark != null and bodyremark != ''">
+                bodyRemark = #{bodyremark},
+            </if>
+            <if test="transferoutcompany != null and transferoutcompany != ''">
+                transferOutCompany = #{transferoutcompany},
+            </if>
+            <if test="transferoutorganization != null and transferoutorganization != ''">
+                transferOutOrganization = #{transferoutorganization},
+            </if>
+            <if test="transferoutwarehouse != null and transferoutwarehouse != ''">
+                transferOutWarehouse = #{transferoutwarehouse},
+            </if>
+            <if test="settlecompmark != null and settlecompmark != ''">
+                settleCompMark = #{settlecompmark},
+            </if>
+            <if test="settleamount != null">
+                settleAmount = #{settleamount},
+            </if>
+            <if test="settenum != null">
+                setteNum = #{settenum},
+            </if>
+            <if test="estimatemoney != null">
+                estimateMoney = #{estimatemoney},
+            </if>
+            <if test="userid != null and userid != ''">
+                userId = #{userid},
+            </if>
+            <if test="indate != null">
+                inDate = #{indate},
+            </if>
+        </set>
+        where documentsId = #{documentsid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from wms_incoming where documentsId = #{documentsid}
+    </delete>
+
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.SupplierDao">
+    <resultMap id="supplier" type="com.java.activiti.model.erp.Supplier">
+        <id property="SUPPLIER_ID" column="SUPPLIER_ID"/>
+        <result property="SUPPLIER_NAME" column="SUPPLIER_NAME"/>
+        <result property="SUPPLIER_PERSON" column="SUPPLIER_PERSON"/>
+        <result property="SUPPLIER_TEL" column="SUPPLIER_TEL"/>
+        <result property="SUPPLIER_EMAIL" column="SUPPLIER_EMAIL"/>
+        <result property="SUPPLIER_ADDRESS" column="SUPPLIER_ADDRESS"/>
+    </resultMap>
+
+    <select id="supplierPage" parameterType="Map" resultMap="supplier">
+        select erp_supplier.* from erp_supplier
+        <where>
+            <if test="SUPPLIER_NAME!=null and SUPPLIER_NAME!='' ">
+                and SUPPLIER_NAME = #{SUPPLIER_NAME}
+            </if>
+            <if test="SUPPLIER_PERSON!=null and SUPPLIER_PERSON!='' ">
+                and SUPPLIER_PERSON = #{SUPPLIER_PERSON}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="supplierCount" parameterType="Map" resultType="int">
+        select count(1) from erp_supplier
+        <where>
+            <if test="SUPPLIER_NAME!=null and SUPPLIER_NAME!='' ">
+                and SUPPLIER_NAME = #{SUPPLIER_NAME}
+            </if>
+            <if test="SUPPLIER_PERSON!=null and SUPPLIER_PERSON!='' ">
+                and SUPPLIER_PERSON = #{SUPPLIER_PERSON}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="supplier">
+		select * from erp_supplier where SUPPLIER_ID=#{SUPPLIER_ID}
+	</select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectSupplierName"
+            parameterType="java.lang.String" resultMap="supplier">
+		select es.SUPPLIER_ID AS SUPPLIER_ID, es.SUPPLIER_NAME AS SUPPLIER_NAME from erp_supplier es
+		where
+		es.SUPPLIER_NAME like CONCAT('%',#{SUPPLIER_NAME},'%')
+	</select>
+
+    <insert id="addSupplier" parameterType="supplier">
+        insert into erp_supplier
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="SUPPLIER_ID != null" >
+                SUPPLIER_ID,
+            </if>
+            <if test="SUPPLIER_NAME != null" >
+                SUPPLIER_NAME,
+            </if>
+            <if test="SUPPLIER_PERSON != null" >
+                SUPPLIER_PERSON,
+            </if>
+            <if test="SUPPLIER_TEL != null" >
+                SUPPLIER_TEL,
+            </if>
+            <if test="SUPPLIER_EMAIL != null" >
+                SUPPLIER_EMAIL,
+            </if>
+            <if test="SUPPLIER_ADDRESS != null" >
+                SUPPLIER_ADDRESS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="SUPPLIER_ID != null" >
+                #{SUPPLIER_ID,jdbcType=INTEGER},
+            </if>
+            <if test="SUPPLIER_NAME != null" >
+                #{SUPPLIER_NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="SUPPLIER_PERSON != null" >
+                #{SUPPLIER_PERSON,jdbcType=VARCHAR},
+            </if>
+            <if test="SUPPLIER_TEL != null" >
+                #{SUPPLIER_TEL,jdbcType=VARCHAR},
+            </if>
+            <if test="SUPPLIER_EMAIL != null" >
+                #{SUPPLIER_EMAIL,jdbcType=VARCHAR},
+            </if>
+            <if test="SUPPLIER_ADDRESS != null" >
+                #{SUPPLIER_ADDRESS,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSupplier" parameterType="supplier">
+        update erp_supplier
+        <set>
+            <if test="SUPPLIER_NAME!=null and SUPPLIER_NAME!='' ">
+                SUPPLIER_NAME=#{SUPPLIER_NAME},
+            </if>
+            <if test="SUPPLIER_PERSON!=null and SUPPLIER_PERSON!='' ">
+                SUPPLIER_PERSON=#{SUPPLIER_PERSON},
+            </if>
+            <if test="SUPPLIER_TEL!=null and SUPPLIER_TEL!='' ">
+                SUPPLIER_TEL=#{SUPPLIER_TEL},
+            </if>
+            <if test="SUPPLIER_EMAIL!=null and SUPPLIER_EMAIL!='' ">
+                SUPPLIER_EMAIL=#{SUPPLIER_EMAIL},
+            </if>
+            <if test="SUPPLIER_ADDRESS!=null and SUPPLIER_ADDRESS!='' ">
+                SUPPLIER_ADDRESS=#{SUPPLIER_ADDRESS},
+            </if>
+        </set>
+        where SUPPLIER_ID=#{SUPPLIER_ID}
+    </update>
+
+    <delete id="deleteSupplierById" parameterType="java.util.List">
+        delete from erp_supplier where SUPPLIER_ID in
+        <foreach collection="list" item="SUPPLIER_ID" index="index" open="(" separator="," close=")">
+            #{SUPPLIER_ID}
+        </foreach>
+    </delete>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findSupplier" parameterType="supplier" resultMap="supplier">
+        select * from erp_supplier
+        <where>
+            <if test="SUPPLIER_ID!=null and SUPPLIER_ID!='' ">
+                and SUPPLIER_ID = #{SUPPLIER_ID}
+            </if>
+            <if test="SUPPLIER_NAME!=null and SUPPLIER_NAME!='' ">
+                and SUPPLIER_NAME = #{SUPPLIER_NAME}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询goodsId对应的物料 -->
+    <select id="selectSupplierBySupplierID" parameterType="java.lang.Integer" resultType="supplier">
+		select * from erp_supplier
+		where SUPPLIER_ID = #{SUPPLIER_ID}
+	</select>
+
+    <!-- 查询所有的物料 -->
+    <select id="selectALL" resultType="supplier">
+		select * from erp_supplier
+	</select>
+
+    <!-- 根据型号/图号 模糊查询型号/图号 自动补全 -->
+    <select id="selectSUPPLIER_PERSONLike" parameterType="java.lang.String" resultMap="supplier">
+	    select SUPPLIER_PERSON from erp_supplier
+		where
+		SUPPLIER_PERSON like CONCAT('%',#{SUPPLIER_PERSON},'%')
+	</select>
+
+    <!-- 查询所有供应商 -->
+    <select id="fndAllSupplier" resultMap="supplier">
+	    select * from erp_supplier
+	</select>
+</mapper>

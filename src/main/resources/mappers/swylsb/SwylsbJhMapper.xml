@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.swylsb.SwylsbJhDao">
+    <resultMap id="SwylsbJh" type="com.java.activiti.model.swylsb.SwylsbJh">
+        <id property="ID" column="ID"/>
+        <result property="jdField" column="jdField"/>
+        <result property="jhStartDate" column="jhStartDate"/>
+        <result property="jhEndDate" column="jhEndDate"/>
+        <result property="sjStartDate" column="sjStartDate"/>
+        <result property="sjEndDate" column="sjEndDate"/>
+    </resultMap>
+
+    <insert  id="updateSwylsbJh" parameterType="SwylsbJh">
+        REPLACE INTO sw_ylsb_jh
+        (ID,jdField,jhStartDate,jhEndDate,sjStartDate,sjEndDate)
+        VALUES
+        <foreach collection="list" index="index" item="item"
+                 separator=",">
+            ( #{item.ID},#{item.jdField},#{item.jhStartDate},
+            #{item.jhEndDate},#{item.sjStartDate},
+            #{item.sjEndDate})
+        </foreach>
+    </insert>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="SwylsbJh">
+		select * from sw_ylsb_jh where ID=#{ID}
+	</select>
+</mapper>

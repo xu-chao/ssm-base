@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.OperationRecordDao">
+    <resultMap id="operationRecord" type="com.java.activiti.model.OperationRecord">
+        <id property="record_ID" column="RECORD_ID"/>
+        <result property="user_ID" column="USER_ID"/>
+        <result property="user_Name" column="USER_NAME"/>
+        <result property="operation_Name" column="OPERATION_NAME"/>
+        <result property="operation_Time" column="OPERATION_TIME"/>
+        <result property="operation_Result" column="OPERATION_RESULT"/>
+    </resultMap>
+
+    <select id="selectUserOperationRecord" resultMap="operationRecord">
+        select
+        RECORD_ID,
+        USER_ID,
+        USER_NAME,
+        OPERATION_NAME,
+        OPERATION_TIME,
+        OPERATION_RESULT
+        from
+        t_operation_record
+        <where>
+            <if test="userID > 0">
+                USER_ID = #{userID}
+            </if>
+            <if test="startDate != null">
+                and OPERATION_TIME >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                <![CDATA[and OPERATION_TIME <= #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="operationRecordPage" parameterType="Map" resultMap="operationRecord">
+        select * from t_operation_record
+        <where>
+            <if test="userID!=null and userID!='' ">
+                and USER_ID = #{userID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and OPERATION_TIME between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="operationRecordCount" parameterType="Map" resultType="int">
+        select count(1) from t_operation_record
+        <where>
+            <if test="userID!=null and userID!='' ">
+                and USER_ID = #{userID}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and OPERATION_TIME between #{startDate} and #{endDate}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <insert id="insertOperationRecord" parameterType="com.java.activiti.model.OperationRecord">
+        insert into t_operation_record(USER_ID, USER_NAME, OPERATION_NAME, OPERATION_TIME, OPERATION_RESULT)
+        values(#{user_ID}, #{user_Name}, #{operation_Name}, #{operation_Time}, #{operation_Result})
+    </insert>
+</mapper> 

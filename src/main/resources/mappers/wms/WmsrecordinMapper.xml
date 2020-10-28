@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.wms.WmsrecordinDao">
+    <resultMap id="wmsrecordin" type="com.java.activiti.model.wms.Wmsrecordin">
+        <id property="inId" column="inId"/>
+        <result property="inOdd" column="inOdd"/>
+        <result property="inOrder" column="inOrder"/>
+        <result property="supplierId" column="supplierId"/>
+        <result property="goodId" column="goodId"/>
+        <result property="whId" column="whId"/>
+        <result property="userId" column="userId"/>
+        <result property="inAmount" column="inAmount"/>
+        <result property="inPrice" column="inPrice"/>
+        <result property="inAllPri" column="inAllPri"/>
+        <result property="inDate" column="inDate"/>
+        <result property="inStatus" column="inStatus"/>
+        <result property="inRemark" column="inRemark"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="supplier" column="supplierId"
+                     select="com.java.activiti.dao.wms.WmssupplierDao.findById"/>
+        <association property="good" column="goodId" select="com.java.activiti.dao.wms.WmsGoodDao.findById"/>
+        <association property="warehouse" column="whId" select="com.java.activiti.dao.wms.WarehouseDao.findById"/>
+        <association property="inSta" column="inStatus" select="com.java.activiti.dao.MyTypeDao.findById"/>
+    </resultMap>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="wmsrecordin">
+		select * from wms_record_in where inId=#{inId}
+	</select>
+
+    <select id="wmsrecordinPage" parameterType="Map" resultMap="wmsrecordin">
+        select * from wms_record_in
+        <where>
+            <if test="inOdd!=null and inOdd!='' ">
+                and inOdd like concat('%',#{inOdd},'%')
+            </if>
+            <if test="supplierId!=null and supplierId!='' ">
+                and supplierId = #{supplierId}
+            </if>
+            <if test="goodId!=null and goodId!='' ">
+                and goodId = #{goodId}
+            </if>
+            <if test="whId!=null and whId!='' ">
+                and whId = #{whId}
+            </if>
+
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="wmsrecordinCount" parameterType="Map" resultType="int">
+        select count(1) from wms_record_in
+        <where>
+            <if test="inOdd!=null and inOdd!='' ">
+                and inOdd like concat('%',#{inOdd},'%')
+            </if>
+            <if test="supplierId!=null and supplierId!='' ">
+                and supplierId = #{supplierId}
+            </if>
+            <if test="goodId!=null and goodId!='' ">
+                and goodId = #{goodId}
+            </if>
+            <if test="whId!=null and whId!='' ">
+                and whId = #{whId}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <insert id="addWmsrecordin" parameterType="com.java.activiti.model.wms.Wmsrecordin">
+        insert into wms_record_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inId != null">
+                inId,
+            </if>
+            <if test="inOdd != null">
+                inOdd,
+            </if>
+            <if test="inOrder != null">
+                inOrder,
+            </if>
+            <if test="supplierId != null">
+                supplierId,
+            </if>
+            <if test="goodId != null">
+                goodId,
+            </if>
+            <if test="whId != null">
+                whId,
+            </if>
+            <if test="userId != null">
+                userId,
+            </if>
+            <if test="inAmount != null">
+                inAmount,
+            </if>
+            <if test="inPrice != null">
+                inPrice,
+            </if>
+            <if test="inAllPri != null">
+                inAllPri,
+            </if>
+            <if test="inDate != null">
+                inDate,
+            </if>
+            <if test="inStatus != null">
+                inStatus,
+            </if>
+            <if test="inRemark != null">
+                inRemark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inId != null">
+                #{inId,jdbcType=BIGINT},
+            </if>
+            <if test="inOdd != null">
+                #{inOdd,jdbcType=VARCHAR},
+            </if>
+            <if test="inOrder != null">
+                #{inOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierId != null">
+                #{supplierId,jdbcType=BIGINT},
+            </if>
+            <if test="goodId != null">
+                #{goodId,jdbcType=VARCHAR},
+            </if>
+            <if test="whId != null">
+                #{whId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="inAmount != null">
+                #{inAmount,jdbcType=BIGINT},
+            </if>
+            <if test="inPrice != null">
+                #{inPrice,jdbcType=DOUBLE},
+            </if>
+            <if test="inAllPri != null">
+                #{inAllPri,jdbcType=DOUBLE},
+            </if>
+            <if test="inDate != null">
+                #{inDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="inStatus != null">
+                #{inStatus,jdbcType=BIGINT},
+            </if>
+            <if test="inRemark != null">
+                #{inRemark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWmsrecordin" parameterType="com.java.activiti.model.wms.Wmsrecordin">
+        update wms_record_in
+        <set>
+            <if test="inOdd!=null and inOdd!='' ">
+                inOdd=#{inOdd},
+            </if>
+            <if test="inOrder!=null and inOrder!='' ">
+                inOrder=#{inOrder},
+            </if>
+            <if test="supplierId!=null and supplierId!='' ">
+                supplierId=#{supplierId},
+            </if>
+            <if test="goodId!=null and goodId!='' ">
+                goodId=#{goodId},
+            </if>
+            <if test="whId!=null and whId!='' ">
+                whId=#{whId},
+            </if>
+            <if test="userId!=null and userId!='' ">
+                userId=#{userId},
+            </if>
+            <if test="inAmount!=null and inAmount!='' ">
+                inAmount=#{inAmount},
+            </if>
+            <if test="inPrice!=null and inPrice!='' ">
+                inPrice=#{inPrice},
+            </if>
+            <if test="inAllPri!=null and inAllPri!='' ">
+                inAllPri=#{inAllPri},
+            </if>
+            <if test="inDate!=null and inDate!='' ">
+                inDate=#{inDate},
+            </if>
+            <if test="inStatus!=null and inStatus!='' ">
+                inStatus=#{inStatus},
+            </if>
+            <if test="inRemark!=null and inRemark!='' ">
+                inRemark=#{inRemark},
+            </if>
+        </set>
+        where inId=#{inId}
+    </update>
+
+    <delete id="deleteWmsrecordinById" parameterType="java.util.List">
+        delete from wms_record_in where inId in
+        <foreach collection="list" item="inId" index="index" open="(" separator="," close=")">
+            #{inId}
+        </foreach>
+    </delete>
+
+</mapper>

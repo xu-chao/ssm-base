@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.RepairDao">
+
+	<resultMap type="com.java.activiti.model.Repair" id="RepairResult">
+		<result property="id" column="id"/>
+		<result property="repairDate" column="repairDate"/>
+		<result property="repairPlace" column="repairPlace"/>
+		<result property="repairLevel" column="repairLevel"/>
+		<result property="repairType" column="repairType"/>
+		<result property="repairContext" column="repairContext"/>
+		<result property="repairImageID" column="repairImageID"/>
+		<result property="repairFileID" column="repairFileID"/>
+		<result property="repairDate" column="repairDate"/>
+		<result property="status" column="status"/>
+		<result property="processInstanceId" column="processInstanceId"/>
+		<association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+	</resultMap>
+	<resultMap type="com.java.activiti.model.WorkOrder" id="WorkOrderResult">
+		<result property="id" column="id"/>
+		<result property="woStartDate" column="woStartDate"/>
+		<result property="woType" column="woType"/>
+		<result property="materielID" column="materielID"/>
+		<result property="materielType" column="materielType"/>
+		<result property="repairedPerson" column="repairedPerson"/>
+		<result property="repairedHelper" column="repairedHelper"/>
+		<result property="repairedProcess" column="repairedProcess"/>
+		<result property="repairedImageID" column="repairedImageID"/>
+		<result property="repairedFileID" column="repairingFileID"/>
+		<result property="woEndDate" column="woEndDate"/>
+		<result property="status" column="status"/>
+		<result property="processInstanceId" column="processInstanceId"/>
+		<association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+		<association property="repair" column="repairID" select="com.java.activiti.dao.RepairDao.findById"/>
+	</resultMap>
+
+	<select id="repairPage" parameterType="Map" resultMap="RepairResult">
+		select * from t_repair
+		<where>
+			<if test="userId!=null and userId!='' ">
+				 and userId = #{userId}
+			</if>
+		</where>
+		order by repairDate desc
+		<if test="pageIndex!=null and pageSize!=null">
+		  limit #{pageIndex},#{pageSize}
+		</if>
+	</select>
+
+	<select id="repairCount" parameterType="Map" resultType="int">
+		select count(1) from t_repair
+		<where>
+			<if test="userId!=null and userId!='' ">
+				 and userId = #{userId}
+			</if>
+		</where>
+	</select>
+
+	<select id="repairThroughPage" parameterType="Map" resultMap="RepairResult">
+		select * from t_repair
+		<where>
+			<if test="userId!=null and userId!='' ">
+				and userId = #{userId}
+			</if>
+			<if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+				and ${searchType} like CONCAT('%',#{searchValue},'%')
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+				and repairDate between #{startDate} and #{endDate}
+			</if>
+		</where>
+		order by repairDate desc
+		<if test="pageIndex!=null and pageSize!=null">
+			limit #{pageIndex},#{pageSize}
+		</if>
+	</select>
+
+	<select id="repairThroughCount" parameterType="Map" resultType="int">
+		select count(1) from t_repair
+		<where>
+			<if test="userId!=null and userId!='' ">
+				and userId = #{userId}
+			</if>
+			<if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+				and ${searchType} like CONCAT('%',#{searchValue},'%')
+			</if>
+			<if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+				and repairDate between #{startDate} and #{endDate}
+			</if>
+		</where>
+	</select>
+
+    <insert id="addRepair" parameterType="com.java.activiti.model.Repair">
+		insert into t_repair values(#{id},#{user.id},#{repairDate},#{repairPlace},#{repairLevel},#{repairType},#{repairContext},#{repairImageID},#{repairFileID},#{recordDate},#{state},#{processInstanceId})
+	</insert>
+
+	<select id="findById" parameterType="String" resultMap="RepairResult">
+		select * from t_repair where id=#{id}
+	</select>
+
+    <update id="updateRepair" parameterType="com.java.activiti.model.Repair">
+        update t_repair
+        <set>
+			<if test="repairImageID!=null and repairImageID!='' ">
+				repairImageID=#{repairImageID},
+			</if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+	<select id="getRepairByTaskId" parameterType="String" resultMap="RepairResult">
+		select * from  t_repair
+		where processInstanceId=#{processInstanceId}
+	</select>
+	<select id="getWorkOrderByRepairID" parameterType="String" resultMap="WorkOrderResult">
+		select * from  t_workorder
+		where repairID=#{repairID}
+	</select>
+
+	<select id="selectTaskByProcessID" resultMap="RepairResult">
+		select *
+		from t_repair where processInstanceId in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper> 

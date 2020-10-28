@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.NeedGoodsDao">
+    <resultMap type="NeedGoods" id="NeedGoodsResult">
+        <result property="nId" column="nId"/>
+        <result property="goodsId" column="goodsId"/>
+        <result property="storageId" column="storageId"/>
+        <result property="purchaseId" column="purchaseId"/>
+        <result property="checkoutId" column="checkoutId"/>
+        <association property="need" column="nId" select="com.java.activiti.dao.NeedDao.findById"/>
+        <association property="goods" column="goodsId" select="com.java.activiti.dao.GoodsDao.findById"/>
+        <association property="storage" column="storageId" select="com.java.activiti.dao.StorageDao.findById"/>
+        <association property="purchase" column="purchaseId" select="com.java.activiti.dao.erp.PurchaseDao.findById"/>
+        <association property="checkout" column="checkoutId" select="com.java.activiti.dao.erp.CheckoutDao.findById"/>
+    </resultMap>
+
+    <resultMap id="goods" type="com.java.activiti.model.Goods">
+        <id property="goodsId" column="goodsId"/>
+        <result property="goodsName" column="goodsName"/>
+        <result property="goodsSysName" column="goodsSysName"/>
+        <result property="goodsType" column="goodsType"/>
+        <result property="goodsCode" column="goodsCode"/>
+        <result property="goodsUnit" column="goodsUnit"/>
+        <result property="goodsSize" column="goodsSize"/>
+        <result property="goodsFunction" column="goodsFunction"/>
+        <result property="goodsMessage" column="goodsMessage"/>
+        <result property="goodsElse" column="goodsElse"/>
+        <result property="goodsValue" column="goodsValue"/>
+        <result property="goodsLink" column="goodsLink"/>
+    </resultMap>
+
+    <select id="needGoodsPage" parameterType="Map" resultMap="NeedGoodsResult">
+        select * from
+        erp_need_goods eng, erp_goods eg
+        <where>
+            eng.goodsId = eg.goodsId and
+            eng.nId = #{nId}
+            <if test="goodsId!=null">
+                and eng.goodsId = #{goodsId}
+            </if>
+        </where>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="needGoodsCount" parameterType="Map" resultType="int">
+        select count(1) from
+        erp_need_goods eng, erp_goods eg
+        <where>
+            eng.goodsId = eg.goodsId and
+            eng.nId = #{nId}
+            <if test="goodsId!=null">
+                and eng.goodsId = #{goodsId}
+            </if>
+        </where>
+    </select>
+
+    <select id="needGoodsThroughPage" parameterType="Map" resultMap="NeedGoodsResult">
+        select eng.* from erp_need_goods eng
+        left join erp_need en on eng.nId = en.NID
+        left join erp_goods eg on eng.goodsId = eg.goodsId
+        left join erp_record_storage ers on eng.storageId = ers.storageId
+        left join erp_purchase ep on eng.purchaseId = ep.purchaseId
+        left join erp_checkout ec on eng.checkoutId = ec.checkoutId
+        <where>
+            1=1
+            <if test="userId!=null and userId!=''">
+                <if test="flag == 'need'">
+                    and en.EApplicant = #{userId}
+                </if>
+                <if test="flag == 'purchase'">
+                    and ep.purchaseGoodsPerson = #{userId}
+                </if>
+                <if test="flag == 'checkout'">
+                    and ec.checkoutPerson = #{userId}
+                </if>
+            </if>
+        </where>
+        <choose>
+            <when test="searchType!=null and searchType!='' and searchType == 'nId' and searchValue!=null and searchValue!=''">
+                and en.${searchType} like CONCAT('%',#{searchValue},'%')
+            </when>
+            <when test="searchType!=null and searchType!='' and searchType == 'goodsId' and searchValue!=null and searchValue!=''">
+                and eg.${searchType} like CONCAT('%',#{searchValue},'%')
+            </when>
+            <otherwise>
+                <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                    <if test="flag == 'goods'">
+                        and eg.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'storage'">
+                        and ers.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'purchase'">
+                        and ep.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'checkout'">
+                        and ec.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                </if>
+            </otherwise>
+        </choose>
+        <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+            and EApplicantData between #{startDate} and #{endDate}
+        </if>
+        order by en.EApplicantData desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="needGoodsThroughCount" parameterType="Map" resultType="int">
+        select count(1) from erp_need_goods eng
+        left join erp_need en on eng.nId = en.NID
+        left join erp_goods eg on eng.goodsId = eg.goodsId
+        left join erp_record_storage ers on eng.storageId = ers.storageId
+        left join erp_purchase ep on eng.purchaseId = ep.purchaseId
+        left join erp_checkout ec on eng.checkoutId = ec.checkoutId
+        <where>
+            1=1
+            <if test="userId!=null and userId!=''">
+                <if test="flag == 'need'">
+                    and en.EApplicant = #{userId}
+                </if>
+                <if test="flag == 'purchase'">
+                    and ep.purchaseGoodsPerson = #{userId}
+                </if>
+                <if test="flag == 'checkout'">
+                    and ec.checkoutPerson = #{userId}
+                </if>
+            </if>
+        </where>
+        <choose>
+            <when test="searchType!=null and searchType!='' and searchType == 'nId' and searchValue!=null and searchValue!=''">
+                and en.${searchType} like CONCAT('%',#{searchValue},'%')
+            </when>
+            <when test="searchType!=null and searchType!='' and searchType == 'goodsId' and searchValue!=null and searchValue!=''">
+                and eg.${searchType} like CONCAT('%',#{searchValue},'%')
+            </when>
+            <otherwise>
+                <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                    <if test="flag == 'goods'">
+                        and eg.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'storage'">
+                        and ers.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'purchase'">
+                        and ep.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                    <if test="flag == 'checkout'">
+                        and ec.${searchType} like CONCAT('%',#{searchValue},'%')
+                    </if>
+                </if>
+            </otherwise>
+        </choose>
+        <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+            and EApplicantData between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+    <delete id="deleteAllGoodsByNId" parameterType="String">
+		delete from erp_need_goods where nId=#{nId};
+	</delete>
+
+    <insert id="addNeedGoods" parameterType="NeedGoods">
+		insert into erp_need_goods values(#{need.NID},#{goods.goodsId},#{storage.storageId},#{purchase.purchaseId},#{checkout.checkoutId});
+	</insert>
+
+    <select id="selectNeedGoods" resultMap="NeedGoodsResult">
+		select * from
+		erp_need_goods eng, erp_goods eg
+		where
+		eng.goodsId = eg.goodsId and
+		eng.nId = #{nId}
+	</select>
+
+    <select id="selectNeedGoodsList" resultMap="NeedGoodsResult">
+		select * from
+		erp_need_goods eng, erp_goods eg, erp_record_storage ers
+		where
+		eng.goodsId = eg.goodsId and eng.storageId = ers.storageId and
+		eng.nId = #{nId}
+	</select>
+
+    <select id="findNeedGoodsByPurchaseId" resultMap="NeedGoodsResult">
+		select * from
+		erp_need_goods eng
+		where
+		eng.purchaseId = #{purchaseId}
+	</select>
+
+    <insert id="insert">
+		insert into erp_need_goods(nId,goodsId,storageId,purchaseId,checkoutId)
+		values(#{nId},#{goodsId},#{storageId},#{purchaseId},#{checkoutId})
+	</insert>
+
+    <delete id="deleteByNId">
+		delete from erp_need_goods
+		where nId = #{nId}
+	</delete>
+
+    <insert id="updateStorageId">
+        update erp_need_goods
+        <set>
+            <if test="storageId!=null">
+                storageId=#{storageId}
+            </if>
+        </set>
+        where nId=#{nId} and goodsId=#{goodsId} LIMIT 1
+    </insert>
+
+    <insert id="updatePurchaseId">
+        update erp_need_goods
+        <set>
+            <if test="purchaseId!=null">
+                purchaseId=#{purchaseId}
+            </if>
+        </set>
+        where nId=#{nId} and goodsId=#{goodsId} LIMIT 1
+    </insert>
+
+    <insert id="updateCheckoutId">
+        update erp_need_goods
+        <set>
+            <if test="checkoutId!=null">
+                checkoutId=#{checkoutId}
+            </if>
+        </set>
+        where nId=#{nId} and goodsId=#{goodsId} LIMIT 1
+    </insert>
+
+    <update id="updateGoods">
+        update erp_need_goods
+        <set>
+            <if test="goodsId!=null and goodsId!='' ">
+                goodsId=#{goodsId},
+            </if>
+        </set>
+        where nId=#{nId_tt} and goodsId=#{goodsId_tt} LIMIT 1
+    </update>
+
+</mapper> 

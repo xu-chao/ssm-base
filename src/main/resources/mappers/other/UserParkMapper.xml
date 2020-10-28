@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.UserParkDao">
+    <resultMap type="com.java.activiti.model.UserPark" id="UserParkResult">
+        <result property="userID" column="userID"/>
+        <result property="parkID" column="ParkID"/>
+        <association property="user" column="userId" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="park" column="parkID" select="com.java.activiti.dao.ParkDao.findById"/>
+    </resultMap>
+    <resultMap id="park" type="com.java.activiti.model.Park">
+        <id property="parkID" column="ParkID"/>
+        <result property="parkName" column="ParkName"/>
+        <result property="parkPinYin" column="parkPinYin"/>
+        <association property="city" javaType="com.java.activiti.model.City">
+            <result  property="cityID" column="CityID"/>
+            <result property="cityName" column="CityName"/>
+            <result property="longitude" column="Longitude"/>
+            <result property="latitude" column="Latitude"/>
+        </association>
+    </resultMap>
+    <insert id="addParkAllocation">
+        replace into act_id_user_park (`ParkID`, `userID`) VALUES (#{parkID}, #{userID});
+    </insert>
+
+    <select id="findAllUser" parameterType="Map" resultMap="UserParkResult">
+        <if test="deptPid!=null and deptPid!='' ">
+        SELECT a.* from (
+        select u.id_ as userID,p.ParkID
+        from act_id_user u
+        left join act_id_userdept ud on u.ID_ = ud.userID
+        left join act_id_user_park p on u.ID_ = p.userID
+        where ud.userID is null
+        union
+        </if>
+        select u.id_ as userID,p.ParkID from act_id_user u
+        left join act_id_user_park p on u.ID_ = p.userID
+        <if test="deptPid!=null and deptPid!='' ">
+            ,act_id_userdept ud,act_id_dept d
+        </if>
+        <where>
+            <if test="deptPid==null or deptPid=='' ">
+            <if test="id!=null and id!='' ">
+                and id_ like #{id}
+            </if>
+            </if>
+            <if test="deptPid!=null and deptPid!='' ">
+                and u.ID_ = ud.userID and ud.deptID = d.deptID and d.pid = #{deptPid}
+            </if>
+        </where>
+        <if test="deptPid!=null and deptPid!='' ">
+            )a
+            <if test="id!=null and id!='' ">
+                where a.userID like #{id}
+            </if>
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="sessionPark" parameterType="Map" resultMap="UserParkResult">
+		select *
+        from  act_id_user u,act_id_user_park ud,t_park d
+        where u.ID_ = ud.userID and
+              ud.ParkID = d.ParkID and
+              u.PWD_ = #{password} and
+		      u.ID_ = #{userName}  and
+			  d.ParkID = #{parkID}
+	</select>
+
+    <select id="selectUserPark" resultMap="park">
+		select
+	    *
+		from
+		t_park d, act_id_user_park ud
+		where
+		d.ParkID = ud.ParkID and
+		ud.userID = #{userID}
+	</select>
+<!--    <delete id="deleteUserPark" parameterType="java.lang.String">-->
+<!--		delete from act_id_userdept where deptID = #{deptID}-->
+<!--		                        and userID = #{userID}-->
+<!--	</delete>-->
+</mapper>

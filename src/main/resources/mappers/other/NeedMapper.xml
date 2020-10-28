@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.NeedDao">
+    <resultMap type="com.java.activiti.model.Need" id="NeedResult">
+        <id property="id" column="id"/>
+        <result property="EID" column="EID"/>
+        <result property="EApplicantData" column="EApplicantData"/>
+        <result property="EPType" column="EPType"/>
+        <result property="EBillCompany" column="EBillCompany"/>
+        <result property="EType" column="EType"/>
+        <result property="EZone" column="EZone"/>
+        <result property="EConsumer" column="EConsumer"/>
+        <result property="NID" column="NID"/>
+        <result property="ESubID" column="ESubID"/>
+        <result property="ESubProjectNameElse" column="ESubProjectNameElse"/>
+        <result property="ESysName" column="ESysName"/>
+        <result property="EApplicant" column="EApplicant"/>
+        <result property="ECompanyId" column="ECompanyId"/>
+        <result property="endDate" column="endDate"/>
+        <result property="state" column="state"/>
+        <result property="processInstanceId" column="processInstanceId"/>
+        <association property="subProject" column="ESubID" select="com.java.activiti.dao.SubProjectDao.findById"/>
+        <association property="user" column="EApplicant" select="com.java.activiti.dao.UserDao.findById"/>
+        <association property="company" column="ECompanyId" select="com.java.activiti.dao.erp.CompanyDao.findById"/>
+    </resultMap>
+
+    <select id="needPage" parameterType="Map" resultMap="NeedResult">
+        select * from erp_need
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and EApplicant = #{userId}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+                and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and EApplicantData between #{startDate} and #{endDate}
+            </if>
+        </where>
+        order by EApplicantData desc
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="needCount" parameterType="Map" resultType="int">
+        select count(1) from erp_need
+        <where>
+            <if test="userId!=null and userId!='' ">
+                and EApplicant = #{userId}
+            </if>
+            <if test="searchType!=null and searchType!='' and searchValue!=null and searchValue!='' ">
+            and ${searchType} like CONCAT('%',#{searchValue},'%')
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate!=null and endDate!='' ">
+                and EApplicantData between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="needCountByMonth" resultType="int">
+        select count(1) from erp_need
+        WHERE date_format(EApplicantData, '%Y-%m') = DATE_FORMAT(now(), '%Y-%m')
+    </select>
+
+    <insert id="addNeed" parameterType="com.java.activiti.model.Need">
+        insert into erp_need
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!= null">
+                id,
+            </if>
+            <if test="EID!= null">
+                EID,
+            </if>
+            <if test="EApplicantData!=null ">
+                EApplicantData,
+            </if>
+            <if test="EPType!=null">
+                EPType,
+            </if>
+            <if test="EBillCompany!=null">
+                EBillCompany,
+            </if>
+            <if test="EType!=null">
+                EType,
+            </if>
+            <if test="EZone!=null">
+                EZone,
+            </if>
+            <if test="EConsumer != null">
+                EConsumer,
+            </if>
+            <if test="NID != null">
+                NID,
+            </if>
+            <if test="ESubID != null">
+                ESubID,
+            </if>
+            <if test="ESubProjectNameElse != null">
+                ESubProjectNameElse,
+            </if>
+            <if test="ESysName != null">
+                ESysName,
+            </if>
+            <if test="EApplicant != null">
+                EApplicant,
+            </if>
+            <if test="ECompanyId != null">
+                ECompanyId,
+            </if>
+            <if test="endDate != null">
+                endDate,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="processInstanceId != null">
+                processInstanceId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="EID != null">
+                #{EID,jdbcType=VARCHAR},
+            </if>
+            <if test="EApplicantData != null">
+                #{EApplicantData,jdbcType=TIMESTAMP},
+            </if>
+            <if test="EPType != null">
+                #{EPType,jdbcType=VARCHAR},
+            </if>
+            <if test="EBillCompany != null">
+                #{EBillCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="EType != null">
+                #{EType,jdbcType=VARCHAR},
+            </if>
+            <if test="EZone != null">
+                #{EZone,jdbcType=VARCHAR},
+            </if>
+            <if test="EConsumer != null">
+                #{EConsumer,jdbcType=VARCHAR},
+            </if>
+            <if test="NID != null">
+                #{NID,jdbcType=VARCHAR},
+            </if>
+            <if test="ESubID != null">
+                #{ESubID,jdbcType=VARCHAR},
+            </if>
+            <if test="ESubProjectNameElse != null">
+                #{ESubProjectNameElse,jdbcType=VARCHAR},
+            </if>
+            <if test="ESysName != null">
+                #{ESysName,jdbcType=VARCHAR},
+            </if>
+            <if test="EApplicant != null">
+                #{EApplicant,jdbcType=VARCHAR},
+            </if>
+            <if test="ECompanyId != null">
+                #{ECompanyId,jdbcType=INTEGER},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="processInstanceId != null">
+                #{processInstanceId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="NeedResult">
+        SELECT * FROM erp_need where NID =#{nId};
+    </select>
+
+    <select id="findNeedById" parameterType="String" resultMap="NeedResult">
+        SELECT * FROM erp_need where id =#{id};
+    </select>
+
+    <update id="updateNeed" parameterType="com.java.activiti.model.Need">
+        update erp_need
+        <set>
+            <if test="NID!=null and NID!='' ">
+                NID=#{NID},
+            </if>
+            <if test="endDate!=null">
+                endDate=#{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <update id="updateNeedByNId" parameterType="com.java.activiti.model.Need">
+        update erp_need
+        <set>
+            <if test="id!=null">
+                id=#{id},
+            </if>
+            <if test="EID!=null and EID!='' ">
+                EID=#{EID},
+            </if>
+            <if test="EApplicantData!=null">
+                EApplicantData=#{EApplicantData,jdbcType=TIMESTAMP},
+            </if>
+            <if test="EPType!=null">
+                EPType=#{EPType},
+            </if>
+            <if test="EBillCompany!=null and EBillCompany!='' ">
+                EBillCompany=#{EBillCompany},
+            </if>
+            <if test="EType!=null and EType!='' ">
+                EType=#{EType},
+            </if>
+            <if test="EZone!=null">
+                EZone=#{EZone},
+            </if>
+            <if test="EConsumer!=null and EConsumer!='' ">
+                EConsumer=#{EConsumer},
+            </if>
+            <if test="NID!=null and NID!='' ">
+                NID=#{NID},
+            </if>
+            <if test="ESubID!=null">
+                ESubID=#{ESubID},
+            </if>
+            <if test="ESubProjectNameElse!=null and ESubProjectNameElse!='' ">
+                ESubProjectNameElse=#{ESubProjectNameElse},
+            </if>
+            <if test="ESysName!=null and ESysName!='' ">
+                ESysName=#{ESysName},
+            </if>
+            <if test="EApplicant!=null and EApplicant!='' ">
+                EApplicant=#{EApplicant},
+            </if>
+            <if test="ECompanyId!=null">
+                ECompanyId=#{ECompanyId},
+            </if>
+            <if test="endDate!=null">
+                endDate=#{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null and state!='' ">
+                state=#{state},
+            </if>
+            <if test="processInstanceId!=null and processInstanceId!='' ">
+                processInstanceId=#{processInstanceId},
+            </if>
+        </set>
+        where NID=#{NID}
+    </update>
+
+    <select id="getNeedByTaskId" parameterType="String" resultMap="NeedResult">
+		select * from erp_need
+		where processInstanceId=#{processInstanceId}
+	</select>
+
+    <!-- 查询need对应的城市是否相同 -->
+    <select id="findNeed" parameterType="com.java.activiti.model.Need" resultMap="NeedResult">
+        select * from erp_need
+        <where>
+            <if test="NID!=null and NID!='' ">
+                NID=#{NID}
+            </if>
+        </where>
+    </select>
+
+        <select id="selectTaskByProcessID" resultMap="NeedResult">
+            select *
+            from erp_need where processInstanceId in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </select>
+</mapper> 

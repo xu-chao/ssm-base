@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.activiti.dao.erp.RespositoryDao">
+    <resultMap id="respository" type="com.java.activiti.model.erp.Respository">
+        <id property="REPO_ID" column="REPO_ID"/>
+        <result property="REPO_ADDRESS" column="REPO_ADDRESS"/>
+        <result property="REPO_STATUS" column="REPO_STATUS"/>
+        <result property="REPO_AREA" column="REPO_AREA"/>
+        <result property="REPO_DESC" column="REPO_DESC"/>
+    </resultMap>
+
+    <select id="respositoryPage" parameterType="Map" resultMap="respository">
+        select * from erp_respository
+        <where>
+            <if test="REPO_ADDRESS!=null and REPO_ADDRESS!='' ">
+                and REPO_ADDRESS = #{REPO_ADDRESS}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+        <if test="pageIndex!=null and pageSize!=null">
+            limit #{pageIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="respositoryCount" parameterType="Map" resultType="int">
+        select count(1) from erp_respository
+        <where>
+            <if test="REPO_ADDRESS!=null and REPO_ADDRESS!='' ">
+                and REPO_ADDRESS = #{REPO_ADDRESS}
+            </if>
+        </where>
+        <if test="sort!=null and sort!='' and order!=null and order!='' ">
+            order by ${sort} ${order}
+        </if>
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="respository">
+		select * from erp_respository where REPO_ID=#{REPO_ID}
+	</select>
+
+    <!-- 根据角色模糊查询角色 自动补全 -->
+    <select id="selectRespositoryName"
+            parameterType="java.lang.String" resultMap="respository">
+		select er.REPO_ID AS REPO_ID, er.REPO_ADDRESS AS REPO_ADDRESS from erp_respository er
+		where
+		er.REPO_ADDRESS like CONCAT('%',#{REPO_ADDRESS},'%')
+	</select>
+
+    <insert id="addRespository" parameterType="respository">
+        insert into erp_respository
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="REPO_ID != null" >
+                REPO_ID,
+            </if>
+            <if test="REPO_ADDRESS != null" >
+                REPO_ADDRESS,
+            </if>
+            <if test="REPO_STATUS != null" >
+                REPO_STATUS,
+            </if>
+            <if test="REPO_AREA != null" >
+                REPO_AREA,
+            </if>
+            <if test="REPO_DESC != null" >
+                REPO_DESC,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="REPO_ID != null" >
+                #{REPO_ID,jdbcType=INTERGER},
+            </if>
+            <if test="REPO_ADDRESS != null" >
+                #{REPO_ADDRESS,jdbcType=VARCHAR},
+            </if>
+            <if test="REPO_STATUS != null" >
+                #{REPO_STATUS,jdbcType=VARCHAR},
+            </if>
+            <if test="REPO_AREA != null" >
+                #{REPO_AREA,jdbcType=VARCHAR},
+            </if>
+            <if test="REPO_DESC != null" >
+                #{REPO_DESC,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateRespository" parameterType="respository">
+        update erp_respository
+        <set>
+            <if test="REPO_ADDRESS!=null and REPO_ADDRESS!='' ">
+                REPO_ADDRESS=#{REPO_ADDRESS},
+            </if>
+            <if test="REPO_STATUS!=null and REPO_STATUS!='' ">
+                REPO_STATUS=#{REPO_STATUS},
+            </if>
+            <if test="REPO_AREA!=null and REPO_AREA!='' ">
+                REPO_AREA=#{REPO_AREA},
+            </if>
+            <if test="REPO_DESC!=null and REPO_DESC!='' ">
+                REPO_DESC=#{REPO_DESC},
+            </if>
+        </set>
+        where REPO_ID=#{REPO_ID}
+    </update>
+
+    <delete id="deleteRespositoryById" parameterType="java.util.List">
+        delete from erp_respository where REPO_ID in
+        <foreach collection="list" item="REPO_ID" index="index" open="(" separator="," close=")">
+            #{REPO_ID}
+        </foreach>
+    </delete>
+
+    <!-- 查询goods对应的城市是否相同 -->
+    <select id="findRespository" parameterType="respository" resultMap="respository">
+        select * from erp_respository
+        <where>
+            <if test="REPO_ID!=null and REPO_ID!='' ">
+                and REPO_ID = #{REPO_ID}
+            </if>
+            <if test="REPO_ADDRESS!=null and REPO_ADDRESS!='' ">
+                and REPO_ADDRESS = #{REPO_ADDRESS}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询goodsId对应的物料 -->
+    <select id="selectRespositoryByRespositoryID" parameterType="java.lang.Integer" resultType="respository">
+		select * from erp_respository
+		where REPO_ID = #{REPO_ID}
+	</select>
+
+    <!-- 查询所有的物料 -->
+    <select id="selectALL" resultType="respository">
+		select * from erp_respository
+	</select>
+</mapper>
